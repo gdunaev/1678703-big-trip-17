@@ -3,6 +3,8 @@ import PointModel from '../model/points-model.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const SuccessHTTPStatusRange = {
@@ -53,6 +55,24 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(PointModel.adaptToClient);
+  }
+
+  addPoint(point) {
+    return this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(PointModel.adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then(PointModel.adaptToClient);
+  }
+
+  deletePoint(point) {
+    return this._load({
+      url: `tasks/${point.id}`,
+      method: Method.DELETE,
+    });
   }
 
   _load({
