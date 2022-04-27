@@ -414,7 +414,6 @@ export default class PointEditorView extends SmartView {
   }
 
   getTemplate() {
-  //  console.log('333', this._offers)
     return createPointEditTemplate(this._state, this._offers, this._destinations);
   }
 

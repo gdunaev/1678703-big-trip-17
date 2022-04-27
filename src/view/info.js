@@ -19,10 +19,7 @@ const createInfoTemplate = (points) => {
         (current.offers === undefined ?
           0 :
           current.offers.reduce((sumOffers, currentOffer) => {
-            if (currentOffer.included) {
               return sumOffers + currentOffer.price;
-            };
-            return sumOffers;
           }, 0));
 
     }, 0);
