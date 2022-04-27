@@ -14,6 +14,9 @@ export default class PointNewPresenter {
         this._onEscPressDown = this._onEscPressDown.bind(this);
         this._handleFormSubmit = this._handleFormSubmit.bind(this);
         this._setDeleteHandler = this._setDeleteHandler.bind(this);
+        this._points = [];
+        this._offers = [];
+        this._destinations = [];
     }
 
     _getEmptyPoint() {
@@ -50,7 +53,7 @@ export default class PointNewPresenter {
         this._points = points;
         this._offers = offers;
         this._destinations = destinations;
-        this._pointViewEditor = new PointEditorView(this._state);
+        this._pointViewEditor = new PointEditorView(this._state, offers, destinations);
         this._pointViewEditor.setSubmitFormHandler(this._handleFormSubmit);
         this._pointViewEditor.setDeleteClickHandler(this._setDeleteHandler);
         this._pointViewEditor.setRollupClickHandler(this._setDeleteHandler);

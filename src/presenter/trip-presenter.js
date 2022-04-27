@@ -1,6 +1,6 @@
 import ListEmptyView from "../view/list-empty.js";
 import { render, remove } from "../utils/render.js";
-import { getSortPricePoints, getSortDayPoints, getSortTimePoints } from "../utils/common.js";
+import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from "../utils/common.js";
 import InfoView from "../view/info.js";
 import TripPointPresenter from "./trip-point-presenter.js";
 import FiltersView from "../view/filter-view.js";
@@ -40,6 +40,7 @@ export default class TripPresenter {
 
     this._offers = [];
     this._destinations = [];
+    this._points = [];
   }
 
   start() {
@@ -50,13 +51,15 @@ export default class TripPresenter {
   createPoint() {
     this._sortMode = SortMode.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    
     this._pointNewPresenter.start(this._points, this._offers, this._destinations);
   }
 
   //получает точки (с сортировкой или фильтрацией) перед отрисовкой
   _getPoints() {
     this._filterType = this._filterModel.getActiveFilter();
-    let points = this._pointsModel.getPoints().slice();
+    this._points = this._pointsModel.getPoints();
+    let points = copy(this._points);
 
     //фильтрация: Прошлые, Будущие, Все
     switch (this._filterType) {

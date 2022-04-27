@@ -1,13 +1,16 @@
 import SmartView from './smart-view.js';
-// import flatpickr from 'flatpickr';
+import flatpickr from 'flatpickr';
 // import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import '../../node_modules/flatpickr/dist/flatpickr.min.js'
 import { getDateEdit, compareDates } from '../utils/dayjs.js';
 import he from 'he';
 
-
+const FORMAT_DATE = 'd/m/y H:i';
 
 const getOfferComponent = (currentOffers, offersAll, typePoint) => {
-  console.log('22', offersAll)
+  if(typePoint === '') {
+    return '';
+  }
   const typePointOffers = offersAll.find((offer) => offer.type === typePoint).offers;
   if (typePointOffers.length === 0) {
     return '';
@@ -297,6 +300,14 @@ export default class PointEditorView extends SmartView {
       this._dateFromPicker.destroy();
       this._dateFromPicker = null;
     }
+    this._dateFromPicker = flatpickr(
+      this.getElement().querySelector(`#event-start-time-1`), {
+      dateFormat: FORMAT_DATE,
+      enableTime: true,
+      defaultDate: this.getElement().querySelector(`#event-start-time-1`).value,
+      onChange: this._dateFromChangeHandler,
+    },
+    );
   }
 
   _setDateToPicker() {
@@ -304,6 +315,14 @@ export default class PointEditorView extends SmartView {
       this._dateToPicker.destroy();
       this._dateToPicker = null;
     }
+    this._dateToPicker = flatpickr(
+      this.getElement().querySelector(`#event-end-time-1`), {
+      dateFormat: FORMAT_DATE,
+      enableTime: true,
+      defaultDate: this.getElement().querySelector(`#event-end-time-1`).value,
+      onChange: this._dateToChangeHandler,
+    },
+    );
   }
 
   _checkDataMinMax(fromTo) {
@@ -396,6 +415,7 @@ export default class PointEditorView extends SmartView {
   }
 
   getTemplate() {
+  //  console.log('333', this._offers)
     return createPointEditTemplate(this._state, this._offers, this._destinations);
   }
 
