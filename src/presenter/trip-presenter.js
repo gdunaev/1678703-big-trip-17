@@ -32,12 +32,10 @@ export default class TripPresenter {
     this._sortView = null;
     this._handleSortModeChange = this._handleSortModeChange.bind(this);
     this._pointNewPresenter = new PointNewPresenter(this._handleViewAction);
-
     this._isLoading = true;
     this._loadingComponent = new LoadingView(this._isLoading);
     this._api = api;
     this._newEventElement = document.querySelector('.trip-main__event-add-btn');
-
     this._offers = [];
     this._destinations = [];
     this._points = [];
@@ -182,6 +180,7 @@ export default class TripPresenter {
     const tripMain = document.querySelector('.trip-main');
     this._infoPoints = new InfoView(points);
     render(tripMain, this._infoPoints, RenderPosition.AFTERBEGIN);
+    
     this._newEventElement.disabled = false;
 
     //если точек нет - прячем InfoView и показываем заставку
