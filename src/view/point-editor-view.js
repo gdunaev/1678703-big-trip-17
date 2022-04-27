@@ -1,7 +1,6 @@
 import SmartView from './smart-view.js';
 import flatpickr from 'flatpickr';
-// import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import '../../node_modules/flatpickr/dist/flatpickr.min.js'
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import { getDateEdit, compareDates } from '../utils/dayjs.js';
 import he from 'he';
 
