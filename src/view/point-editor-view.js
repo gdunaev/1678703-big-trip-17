@@ -421,7 +421,7 @@ export default class PointEditorView extends SmartView {
     //делаем через if (а не ? :) чтобы не затирать объект destinationState
     if(this._state.destinationState.name !== '') {
       this._state.destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
-    } 
+    }
     //а здесь ищем объект для прежней точки (если она не менялась)
     this._state.destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
   }

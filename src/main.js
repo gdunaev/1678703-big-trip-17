@@ -9,7 +9,7 @@ import StatisticsView from './view/statistics-view.js';
 import Api from './utils/api.js';
 
 const AUTHORIZATION = 'Basic 1qAWDr5tGY7uJi9';
-const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 
 const pageBodyMain = document.querySelector('.page-body__page-main');
 const tripEventsMain = pageBodyMain.querySelector('.trip-events');
@@ -71,4 +71,4 @@ api.getAll().then((value) => {
   //  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
 });
 
-//ВОПРОСЫ: 1. что показывать при общей ошибке? 
+//ВОПРОСЫ: 1. что показывать при общей ошибке?

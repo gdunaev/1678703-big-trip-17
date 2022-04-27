@@ -2,7 +2,7 @@ import ListEmptyView from "../view/list-empty.js";
 import { render, remove } from "../utils/render.js";
 import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from "../utils/common.js";
 import InfoView from "../view/info.js";
-import TripPointPresenter from "./trip-point-presenter.js";
+import TripPointPresenter from "./point-presenter.js";
 import FiltersView from "../view/filter-view.js";
 import { getFuturePoints, getPastPoints } from "../utils/dayjs.js";
 import SortView from "../view/sort-view.js";
@@ -49,7 +49,7 @@ export default class TripPresenter {
   createPoint() {
     this._sortMode = SortMode.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    
+
     this._pointNewPresenter.start(this._points, this._offers, this._destinations);
   }
 
@@ -91,7 +91,11 @@ export default class TripPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE:
-        this._pointsModel.updatePoint(updateType, update);
+        // this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          // this._tasksModel.updateTask(updateType, response);
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD:
         this._pointsModel.addPoint(updateType, update);
@@ -180,7 +184,7 @@ export default class TripPresenter {
     const tripMain = document.querySelector('.trip-main');
     this._infoPoints = new InfoView(points);
     render(tripMain, this._infoPoints, RenderPosition.AFTERBEGIN);
-    
+
     this._newEventElement.disabled = false;
 
     //если точек нет - прячем InfoView и показываем заставку

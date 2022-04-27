@@ -6,7 +6,7 @@ import {UserAction, UpdateType, ModeEditing, RenderPosition} from '../utils/cons
 
 
 
-export default class TripPointPresenter {
+export default class PointPresenter {
   constructor(tripEventsMain, changeMode, changeData, offers, destinations) {
     this._tripEventsMain = tripEventsMain;
     this._pointViewEditor = null;
