@@ -97,23 +97,26 @@ export default class PointsModel extends Observer {
   }
 
   static adaptToServer(point) {
+
     const adaptedPoint = Object.assign(
       {},
       point,
       {
-        'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
-        'is_archived': point.isArchive,
+        'type': point.typePoint,
+        'date_from': point.dateFrom,
+        'base_price': point.basePrice,
+        'date_to': point.dateTo,
         'is_favorite': point.isFavorite,
-        'repeating_days': point.repeating,
       },
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint.dueDate;
-    delete adaptedPoint.isArchive;
+    delete adaptedPoint.typePoint;
+    delete adaptedPoint.dateFrom;
     delete adaptedPoint.isFavorite;
-    delete adaptedPoint.repeating;
-
+    delete adaptedPoint.basePrice;
+    delete adaptedPoint.dateTo;
+    // console.log('111', adaptedPoint)
     return adaptedPoint;
   }
 }

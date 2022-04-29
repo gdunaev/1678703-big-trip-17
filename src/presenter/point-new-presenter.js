@@ -4,6 +4,7 @@ import PointEditorView from '../view/point-editor-view.js';
 import { UserAction, UpdateType, ModeEditing, RenderPosition } from '../utils/const.js';
 
 
+
 export default class PointNewPresenter {
     constructor(changeData) {
       this._tripEventsTripSort = null;
@@ -25,28 +26,20 @@ export default class PointNewPresenter {
             'typePoint': '',
             'basePrice': 0,
             'dateFrom': '',
-            'dateFromOnlyDate': '',
-            'dateFromMonthDay': '',
-            'dateFromHourMinute': '',
-            'dateFromHour': '',
-            'dateFromEdit': '',
             'dateTo': '',
-            'dateToHour': '',
-            'dateToHourMinute': '',
-            'dateToEdit': '',
-            'pointDuration': '',
             'destination': {
                 'name': '',
                 'description': '',
                 'pictures': [],
               },
-            'isFavorite': '',
+            'isFavorite': false,
             'offers': [],
         };
     }
 
     start(points, offers, destinations) {
         if (this._pointViewEditor !== null) {
+            this.destroy();
             return;
         }
         this._tripEventsTripSort = document.querySelector('.trip-events__trip-sort');
@@ -61,6 +54,28 @@ export default class PointNewPresenter {
         document.querySelector('.trip-main__event-add-btn').disabled = true;
 
         render(this._tripEventsTripSort, this._pointViewEditor, RenderPosition.AFTEREND);
+    }
+
+    setSaving() {
+
+        this._pointViewEditor.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        // console.log('333', this._pointViewEditor)
+    }
+
+    setAborting() {
+      // console.log('222', this._pointViewEditor)
+        const resetFormState = () => {
+                this._pointViewEditor.updateData({
+                isDisabled: false,
+                isSaving: false,
+                isDeleting: false,
+                });
+        };
+        // console.log(this._pointViewEditor)
+        this._pointViewEditor.shake(resetFormState);
     }
 
     _setDeleteHandler() {
@@ -87,10 +102,11 @@ export default class PointNewPresenter {
     }
 
     _handleFormSubmit(point) {
+
         this._changeData(
             UserAction.ADD,
             UpdateType.MINOR,
-            Object.assign({}, point, { id: `${this._points.length}`}));
-        this.destroy();
+            point,
+        );
     }
 }

@@ -4,9 +4,12 @@ import PointEditorView from '../view/point-editor-view.js';
 import PointView from '../view/point-view.js';
 import {UserAction, UpdateType, ModeEditing, RenderPosition} from '../utils/const.js';
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
 
-
-export default class TripPointPresenter {
+export default class PointPresenter {
   constructor(tripEventsMain, changeMode, changeData, offers, destinations) {
     this._tripEventsMain = tripEventsMain;
     this._pointViewEditor = null;
@@ -19,6 +22,8 @@ export default class TripPointPresenter {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._offers = offers;
     this._destinations = destinations;
+    this._pointViewEditor = null;
+    this._pointView = null;
   }
 
   start(point) {
@@ -57,6 +62,40 @@ export default class TripPointPresenter {
       point,
     );
   }
+
+  setViewState(state) {
+
+    // console.log('222', state)
+
+    const resetFormState = () => {
+      this._pointViewEditor.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointViewEditor.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointViewEditor.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+          this._pointView.shake(resetFormState);
+          this._pointViewEditor.shake(resetFormState);
+          break;
+    }
+  }
+
+  
 
   destroy() {
     remove(this._pointView);

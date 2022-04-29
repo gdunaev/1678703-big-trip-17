@@ -2,7 +2,7 @@ import ListEmptyView from "../view/list-empty.js";
 import { render, remove } from "../utils/render.js";
 import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from "../utils/common.js";
 import InfoView from "../view/info.js";
-import TripPointPresenter from "./trip-point-presenter.js";
+import TripPointPresenter, {State as PresenterViewState} from "./point-presenter.js";
 import FiltersView from "../view/filter-view.js";
 import { getFuturePoints, getPastPoints } from "../utils/dayjs.js";
 import SortView from "../view/sort-view.js";
@@ -49,7 +49,7 @@ export default class TripPresenter {
   createPoint() {
     this._sortMode = SortMode.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    
+
     this._pointNewPresenter.start(this._points, this._offers, this._destinations);
   }
 
@@ -91,13 +91,31 @@ export default class TripPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE:
-        this._pointsModel.updatePoint(updateType, update);
+        this._pointPresenter[update.id].setViewState(PresenterViewState.SAVING);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        }).catch(() => {
+          this._pointPresenter[update.id].setViewState(PresenterViewState.ABORTING);
+        });
         break;
       case UserAction.ADD:
-        this._pointsModel.addPoint(updateType, update);
+        this._pointNewPresenter.setSaving();
+        // debugger;
+        this._api.addPoint(update).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        }).catch(() => {
+          // debugger
+          this._pointNewPresenter.setAborting();
+        });
         break;
       case UserAction.DELETE:
-        this._pointsModel.deletePoint(updateType, update);
+        // console.log('333',  this._pointPresenter)
+        this._pointPresenter[update.id].setViewState(PresenterViewState.DELETING);
+        this._api.deletePoint(update).then(() => {
+          this._pointsModel.deletePoint(updateType, update);
+        }).catch(() => {
+          this._pointPresenter[update.id].setViewState(PresenterViewState.ABORTING);
+        });
         break;
     }
   }
@@ -180,7 +198,7 @@ export default class TripPresenter {
     const tripMain = document.querySelector('.trip-main');
     this._infoPoints = new InfoView(points);
     render(tripMain, this._infoPoints, RenderPosition.AFTERBEGIN);
-    
+
     this._newEventElement.disabled = false;
 
     //если точек нет - прячем InfoView и показываем заставку
