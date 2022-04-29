@@ -97,6 +97,7 @@ export default class PointsModel extends Observer {
   }
 
   static adaptToServer(point) {
+
     const adaptedPoint = Object.assign(
       {},
       point,
@@ -115,7 +116,7 @@ export default class PointsModel extends Observer {
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateTo;
-
+    // console.log('111', adaptedPoint)
     return adaptedPoint;
   }
 }

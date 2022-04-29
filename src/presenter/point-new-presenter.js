@@ -39,6 +39,7 @@ export default class PointNewPresenter {
 
     start(points, offers, destinations) {
         if (this._pointViewEditor !== null) {
+            this.destroy();
             return;
         }
         this._tripEventsTripSort = document.querySelector('.trip-events__trip-sort');
@@ -56,13 +57,16 @@ export default class PointNewPresenter {
     }
 
     setSaving() {
+
         this._pointViewEditor.updateData({
           isDisabled: true,
           isSaving: true,
         });
+        // console.log('333', this._pointViewEditor)
     }
 
     setAborting() {
+      // console.log('222', this._pointViewEditor)
         const resetFormState = () => {
                 this._pointViewEditor.updateData({
                 isDisabled: false,
@@ -70,6 +74,7 @@ export default class PointNewPresenter {
                 isDeleting: false,
                 });
         };
+        // console.log(this._pointViewEditor)
         this._pointViewEditor.shake(resetFormState);
     }
 
@@ -97,12 +102,11 @@ export default class PointNewPresenter {
     }
 
     _handleFormSubmit(point) {
-        
+
         this._changeData(
             UserAction.ADD,
             UpdateType.MINOR,
             point,
-            );
-        this.destroy();
+        );
     }
 }

@@ -104,6 +104,7 @@ export default class TripPresenter {
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         }).catch(() => {
+          // debugger
           this._pointNewPresenter.setAborting();
         });
         break;
