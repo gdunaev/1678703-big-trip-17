@@ -71,3 +71,4 @@ api.getAll().then((value) => {
   //  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
 });
 
+//
