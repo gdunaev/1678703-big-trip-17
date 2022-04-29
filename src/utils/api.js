@@ -58,6 +58,7 @@ export default class Api {
   }
 
   addPoint(point) {
+    
     return this._load({
       url: 'points',
       method: Method.POST,
@@ -70,7 +71,7 @@ export default class Api {
 
   deletePoint(point) {
     return this._load({
-      url: `tasks/${point.id}`,
+      url: `points/${point.id}`,
       method: Method.DELETE,
     });
   }

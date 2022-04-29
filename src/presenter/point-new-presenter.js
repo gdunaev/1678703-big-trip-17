@@ -25,22 +25,13 @@ export default class PointNewPresenter {
             'typePoint': '',
             'basePrice': 0,
             'dateFrom': '',
-            'dateFromOnlyDate': '',
-            'dateFromMonthDay': '',
-            'dateFromHourMinute': '',
-            'dateFromHour': '',
-            'dateFromEdit': '',
             'dateTo': '',
-            'dateToHour': '',
-            'dateToHourMinute': '',
-            'dateToEdit': '',
-            'pointDuration': '',
             'destination': {
                 'name': '',
                 'description': '',
                 'pictures': [],
               },
-            'isFavorite': '',
+            'isFavorite': false,
             'offers': [],
         };
     }

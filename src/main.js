@@ -71,4 +71,3 @@ api.getAll().then((value) => {
   //  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
 });
 
-//ВОПРОСЫ: 1. что показывать при общей ошибке?
