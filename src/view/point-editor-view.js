@@ -6,7 +6,8 @@ import he from 'he';
 
 const FORMAT_DATE = 'd/m/y H:i';
 
-const getOfferComponent = (currentOffers, offersAll, typePoint) => {
+const getOfferComponent = (currentOffers, offersAll, typePoint, isDisabled) => {
+  // console.log('111', currentOffers)
   if(typePoint === '') {
     return '';
   }
@@ -18,7 +19,7 @@ const getOfferComponent = (currentOffers, offersAll, typePoint) => {
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
               ${typePointOffers.map((offer, index) => `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index}" type="checkbox" name="event-offer-luggage" ${currentOffers.some(element => element.title === offer.title) ? 'checked' : ''}>
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index}" ${isDisabled ? 'disabled' : ''} type="checkbox" name="event-offer-luggage" ${currentOffers.some(element => element.id === offer.id) ? 'checked' : ''}>
                 <label class="event__offer-label" for="event-offer-luggage-${index}">
                   <span class="event__offer-title">${offer.title}</span>
                   +€&nbsp;
@@ -29,6 +30,7 @@ const getOfferComponent = (currentOffers, offersAll, typePoint) => {
           </section>`;
   }
 };
+
 
 const getDescriptionComponent = (destination) => {
   if (destination.name !== '') {
@@ -49,24 +51,34 @@ const getDescriptionComponent = (destination) => {
 
 
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
-  const { typePoint, dateFromState, dateToState, typePointState, destinationState, priceState } = state;
+  const { typePoint, 
+    dateFromState, 
+    dateToState, 
+    typePointState, 
+    destinationState, 
+    priceState,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = state;
 
+  // let isDisabled = true;
+  console.log('11', isSaving)
   //отрисовка состояния при смене типа и места назначения.
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
 
   //офферы для типа точки, если тип точки меняется - берем офферы из общего массива,
   //если не меняются - берем из state, если он пустой (новая точка) - берем пустой массив.
-  //это только для отрисовки, при отправке формы будет отдельно получать офферы.
+  //это только для отрисовки, при отправке формы будем отдельно получать офферы.
   const offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
-  const offersComponent = getOfferComponent(offers, offersAll, typePointTemplate);
+  const offersComponent = getOfferComponent(offers, offersAll, typePointTemplate, isDisabled);
 
   const destination = destinationState.name !== '' ? destinationState : state.destination;
   const name = destination === undefined ? '' : destination.name;
   const dateFromEdit = dateFromState !== '' ? dateFromState : state.dateFrom !== '' ? getDateEdit(state.dateFrom) : '';
   const dateToEdit = dateToState !== '' ? dateToState : state.dateTo !== '' ? getDateEdit(state.dateTo) : '';
   const price = priceState !== '' ? priceState : state.basePrice;
-  const cancelDelete = 'Delete';
 
   //подставляем все наименования точек
   let dataListTemplate = '';
@@ -89,7 +101,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="${typePointIconTemplate}" alt="">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -147,7 +159,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
           <label class="event__label  event__type-output" for="event-destination-1">
           ${typePointTemplate}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" autocomplete="off">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" ${isDisabled ? 'disabled' : ''} list="destination-list-1" autocomplete="off">
           <datalist id="destination-list-1">
             ${dataListTemplate}
           </datalist>
@@ -155,10 +167,10 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFromEdit}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFromEdit}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateToEdit}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateToEdit}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -166,11 +178,11 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" min = "0" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" min = "0" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${cancelDelete}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? "Saving..." : "Save"}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? "Deleting..." : "Delete"}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -383,6 +395,9 @@ export default class PointEditorView extends SmartView {
       dateToPicker: '',
       priceState: '',
       offersState: [],
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     },
     );
   }
@@ -409,6 +424,9 @@ export default class PointEditorView extends SmartView {
     delete data.dateToPicker;
     delete data.priceState;
     delete data.offersState;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }

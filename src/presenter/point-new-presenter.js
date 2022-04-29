@@ -4,6 +4,7 @@ import PointEditorView from '../view/point-editor-view.js';
 import { UserAction, UpdateType, ModeEditing, RenderPosition } from '../utils/const.js';
 
 
+
 export default class PointNewPresenter {
     constructor(changeData) {
       this._tripEventsTripSort = null;
@@ -54,6 +55,24 @@ export default class PointNewPresenter {
         render(this._tripEventsTripSort, this._pointViewEditor, RenderPosition.AFTEREND);
     }
 
+    setSaving() {
+        this._pointViewEditor.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+    }
+
+    setAborting() {
+        const resetFormState = () => {
+                this._pointViewEditor.updateData({
+                isDisabled: false,
+                isSaving: false,
+                isDeleting: false,
+                });
+        };
+        this._pointViewEditor.shake(resetFormState);
+    }
+
     _setDeleteHandler() {
         this.destroy();
     }
@@ -78,10 +97,12 @@ export default class PointNewPresenter {
     }
 
     _handleFormSubmit(point) {
+        
         this._changeData(
             UserAction.ADD,
             UpdateType.MINOR,
-            Object.assign({}, point, { id: `${this._points.length}`}));
+            point,
+            );
         this.destroy();
     }
 }

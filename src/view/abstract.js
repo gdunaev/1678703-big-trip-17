@@ -1,5 +1,8 @@
 import { createElementDom } from "../utils/render.js";
 
+const SHAKE_ANIMATION_TIMEOUT = 1600;
+
+
 class AbstractView {
     constructor() {
         if (new.target === AbstractView) {
@@ -35,6 +38,14 @@ class AbstractView {
       document.querySelector('.trip-filters').classList.remove('visually-hidden');
       document.querySelector('.trip-main__event-add-btn').disabled = false;
     }
+
+    shake(callback) {
+        this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+        setTimeout(() => {
+          this.getElement().style.animation = '';
+          callback();
+        }, SHAKE_ANIMATION_TIMEOUT);
+      }
 }
 
  export {AbstractView}
