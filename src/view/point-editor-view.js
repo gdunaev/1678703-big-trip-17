@@ -301,9 +301,10 @@ export default class PointEditorView extends SmartView {
       const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
       if (offerElement.checked) {
         // console.log('111', title)
-        includedOffers.push(offers.find(offer => offer.title === title));
+        includedOffers.push(offers.find(offer => offer.title === title).id);
       }
     });
+    // console.log('111', includedOffers)
     this.updateData({
       offersState: includedOffers,
     }, false);
