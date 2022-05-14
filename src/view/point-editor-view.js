@@ -6,15 +6,17 @@ import he from 'he';
 
 const FORMAT_DATE = 'd/m/y H:i';
 
-const getOfferComponent = (currentOffers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
+const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
   // console.log('111', currentOffers)
 
   // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
   // offers = offersState !== [] ? offersState : offers;
 
   let typePointOffers = [];
+  let currentOffers = offers;
   if(typePointState !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
+    currentOffers = [];
   } else {
     typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
     // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
