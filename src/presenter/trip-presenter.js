@@ -196,7 +196,7 @@ export default class TripPresenter {
 
     //отрисовка InfoView (список точек и общая стоимость)
     const tripMain = document.querySelector('.trip-main');
-    this._infoPoints = new InfoView(points);
+    this._infoPoints = new InfoView(points, this._offers);
     render(tripMain, this._infoPoints, RenderPosition.AFTERBEGIN);
 
     this._newEventElement.disabled = false;
