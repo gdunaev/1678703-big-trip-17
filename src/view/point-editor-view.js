@@ -6,12 +6,25 @@ import he from 'he';
 
 const FORMAT_DATE = 'd/m/y H:i';
 
-const getOfferComponent = (currentOffers, offersAll, typePoint, isDisabled) => {
+const getOfferComponent = (currentOffers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
   // console.log('111', currentOffers)
-  if(typePoint === '') {
-    return '';
+
+  // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
+  // offers = offersState !== [] ? offersState : offers;
+
+  let typePointOffers = [];
+  if(typePointState !== '') {
+    typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
+  } else {
+    typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
+    // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
   }
-  const typePointOffers = offersAll.find((offer) => offer.type === typePoint).offers;
+
+  // console.log('11', typePoint, currentOffers, offersAll)
+  // if(typePoint === '') {
+  //   return '';
+  // }
+  // const typePointOffers = offersAll.find((offer) => offer.type === typePoint).offers;
   if (typePointOffers.length === 0) {
     return '';
   } else {
@@ -19,7 +32,8 @@ const getOfferComponent = (currentOffers, offersAll, typePoint, isDisabled) => {
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
               ${typePointOffers.map((offer, index) => `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index}" ${isDisabled ? 'disabled' : ''} type="checkbox" name="event-offer-luggage" ${currentOffers.length !== 0 ? (currentOffers.some(element => element.id === offer.id) ? 'checked' : '') : 'checked'}>
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index}" ${isDisabled ? 'disabled' : ''}
+                  type="checkbox" name="event-offer-luggage" ${currentOffers.length !== 0 ? (currentOffers.includes(offer.id) ? 'checked' : '') : 'checked'}>
                 <label class="event__offer-label" for="event-offer-luggage-${index}">
                   <span class="event__offer-title">${offer.title}</span>
                   +€&nbsp;
@@ -61,6 +75,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
     isSaving,
     isDeleting,
     offersState,
+    offers,
   } = state;
 
   // let isDisabled = true;
@@ -69,12 +84,9 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
 
-  //офферы для типа точки, если тип точки меняется - берем офферы из общего массива,
-  //если не меняются - берем из state, если он пустой (новая точка) - берем пустой массив.
+  //офферы для типа точки,
   //это только для отрисовки, при отправке формы будем отдельно получать офферы.
-  let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
-  offers = offersState !== [] ? offersState : offers;
-  const offersComponent = getOfferComponent(offers, offersAll, typePointTemplate, isDisabled);
+  const offersComponent = getOfferComponent(offers, offersState, offersAll, typePointState, typePoint, isDisabled);
 
   const destination = destinationState.name !== '' ? destinationState : state.destination;
   const name = destination === undefined ? '' : destination.name;
