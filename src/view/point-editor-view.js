@@ -17,7 +17,7 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
   if(typePointState !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
     currentOffers = [];
-  } else {
+  } else if (typePoint !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
     // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
   }
@@ -288,6 +288,8 @@ export default class PointEditorView extends SmartView {
   }
 
   _includeOffers() {
+
+    // console.log('12', this._state.typePointState)
     //когда меняется тип точки мы офферы меняем ТОЛЬКО на отрисовке, клик на оффере нигде не отражается,
     //а вот при отправке формы, мы ищем по типу точки (выбранному или прежнему) все офферы полученные с сервера для этого типа,
     //и из них (по названию выбранного оффера) находим нужный и добавляем в массив выбранных.
