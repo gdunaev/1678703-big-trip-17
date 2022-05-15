@@ -6,20 +6,38 @@ import he from 'he';
 
 const FORMAT_DATE = 'd/m/y H:i';
 
+// const includeOffers = (typePointState, typePointOffers, element) => {
+
+//   const offersElement = element.querySelectorAll('.event__offer-checkbox');
+//   let includedOffers = [];
+//   offersElement.forEach((offerElement) => {
+//     const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
+//     if (offerElement.checked) {
+
+//       includedOffers.push(typePointOffers.find(offer => offer.title === title).id);
+//     }
+//   });
+//   console.log('111', includedOffers)
+//   return includedOffers;
+// }
+
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
-  // console.log('111', currentOffers)
+  // console.log('111', typePointState, typePoint, offersState, offers)
 
   // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
   // offers = offersState !== [] ? offersState : offers;
 
   let typePointOffers = [];
-  let currentOffers = offers;
+  let currentOffers = offersState !== [] ? offersState : offers;
   if(typePointState !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
-    currentOffers = [];
+    // console.log('222', currentOffers)
+    // currentOffers = [];
+
   } else if (typePoint !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
     // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
+    // console.log('333', currentOffers)
   }
 
   // console.log('11', typePoint, currentOffers, offersAll)
@@ -237,6 +255,7 @@ export default class PointEditorView extends SmartView {
     this._changeEventTypeHandler = this._changeEventTypeHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._offerClickHandler = this._offerClickHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -277,6 +296,9 @@ export default class PointEditorView extends SmartView {
     this._setDateToPicker();
     this.getElement().querySelector('#event-destination-1').addEventListener('input', this._destinationInputHandler);
     this.getElement().querySelector('#event-price-1').addEventListener('input', this._priceInputHandler);
+
+    this.getElement().querySelector('.event__available-offers').addEventListener('click', this._offerClickHandler);
+
   }
 
   //перерисовку вызываем только когда полностью указано Наименование точки
@@ -287,7 +309,7 @@ export default class PointEditorView extends SmartView {
     return true;
   }
 
-  _includeOffers() {
+  _includeOffers(justDataUpdating = false) {
 
     // console.log('12', this._state.typePointState)
     //когда меняется тип точки мы офферы меняем ТОЛЬКО на отрисовке, клик на оффере нигде не отражается,
@@ -306,10 +328,10 @@ export default class PointEditorView extends SmartView {
         includedOffers.push(offers.find(offer => offer.title === title).id);
       }
     });
-    // console.log('111', includedOffers)
+    // console.log('234',this._state.typePoint, includedOffers)
     this.updateData({
       offersState: includedOffers,
-    }, false);
+    }, justDataUpdating);
     // console.log('222', includedOffers)
   }
 
@@ -387,12 +409,30 @@ export default class PointEditorView extends SmartView {
     });
   }
 
+  _getOffersId(type) {
+    const offers = this._offers.find((offer) => offer.type === type).offers;
+    // console.log('33', offers.map((offer) => offer.id))
+    return offers.map((offer) => offer.id);
+  }
+
   _changeEventTypeHandler(evt) {
     if (evt.target.tagName === 'LABEL') {
       this.updateData({
         typePointState: (evt.target.textContent).toLowerCase(),
+        offersState: this._getOffersId((evt.target.textContent).toLowerCase()),
       });
     }
+  }
+
+  _offerClickHandler(evt) {
+    // evt.preventDefault();
+    // console.log(evt.target)
+    // if (evt.target.tagName === 'LABEL') {
+    //   this.updateData({
+    //     typePointState: (evt.target.textContent).toLowerCase(),
+    //   });
+    // }
+    this._includeOffers(true);
   }
 
   restoreHandlers() {
