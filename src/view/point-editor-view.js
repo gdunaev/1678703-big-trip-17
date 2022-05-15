@@ -22,7 +22,7 @@ const FORMAT_DATE = 'd/m/y H:i';
 // }
 
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
-  // console.log('111', typePointState, typePoint, offersState, offers)
+  console.log('111', typePointState, typePoint, offersState, offers)
 
   // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
   // offers = offersState !== [] ? offersState : offers;
@@ -45,10 +45,10 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
   //   return '';
   // }
   // const typePointOffers = offersAll.find((offer) => offer.type === typePoint).offers;
-  if (typePointOffers.length === 0) {
-    return '';
-  } else {
-    return `<section class="event__section  event__section--offers">
+  // if (typePointOffers.length === 0) {
+  //   return '';
+  // } else {
+    return `<section class="event__section  event__section--offers ${typePointOffers.length === 0 ? 'visually-hidden' : ''}">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
               ${typePointOffers.map((offer, index) => `<div class="event__offer-selector">
@@ -62,7 +62,7 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
               </div>`).join(' ')}
               </div>
           </section>`;
-  }
+  // }
 };
 
 
@@ -310,11 +310,6 @@ export default class PointEditorView extends SmartView {
   }
 
   _includeOffers(justDataUpdating = false) {
-
-    // console.log('12', this._state.typePointState)
-    //когда меняется тип точки мы офферы меняем ТОЛЬКО на отрисовке, клик на оффере нигде не отражается,
-    //а вот при отправке формы, мы ищем по типу точки (выбранному или прежнему) все офферы полученные с сервера для этого типа,
-    //и из них (по названию выбранного оффера) находим нужный и добавляем в массив выбранных.
     const offers = this._state.typePointState !== '' ?
       this._offers.find((offer) => offer.type === this._state.typePointState).offers :
       this._offers.find((offer) => offer.type === this._state.typePoint).offers;
@@ -324,15 +319,12 @@ export default class PointEditorView extends SmartView {
     offersElement.forEach((offerElement) => {
       const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
       if (offerElement.checked) {
-        // console.log('111', title)
         includedOffers.push(offers.find(offer => offer.title === title).id);
       }
     });
-    // console.log('234',this._state.typePoint, includedOffers)
     this.updateData({
       offersState: includedOffers,
     }, justDataUpdating);
-    // console.log('222', includedOffers)
   }
 
   _priceInputHandler(evt) {
@@ -411,7 +403,6 @@ export default class PointEditorView extends SmartView {
 
   _getOffersId(type) {
     const offers = this._offers.find((offer) => offer.type === type).offers;
-    // console.log('33', offers.map((offer) => offer.id))
     return offers.map((offer) => offer.id);
   }
 
@@ -425,13 +416,6 @@ export default class PointEditorView extends SmartView {
   }
 
   _offerClickHandler(evt) {
-    // evt.preventDefault();
-    // console.log(evt.target)
-    // if (evt.target.tagName === 'LABEL') {
-    //   this.updateData({
-    //     typePointState: (evt.target.textContent).toLowerCase(),
-    //   });
-    // }
     this._includeOffers(true);
   }
 
