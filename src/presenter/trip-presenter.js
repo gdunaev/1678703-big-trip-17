@@ -2,7 +2,7 @@ import ListEmptyView from "../view/list-empty.js";
 import { render, remove } from "../utils/render.js";
 import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from "../utils/common.js";
 import InfoView from "../view/info.js";
-import TripPointPresenter, {State as PresenterViewState} from "./point-presenter.js";
+import PointPresenter, {State as PresenterViewState} from "./point-presenter.js";
 import FiltersView from "../view/filter-view.js";
 import { getFuturePoints, getPastPoints } from "../utils/dayjs.js";
 import SortView from "../view/sort-view.js";
@@ -177,7 +177,7 @@ export default class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new TripPointPresenter(this._tripEventsMain, this._changeModePoint, this._handleViewAction, this._offers, this._destinations);
+    const pointPresenter = new PointPresenter(this._tripEventsMain, this._changeModePoint, this._handleViewAction, this._offers, this._destinations);
     pointPresenter.start(point);
     this._pointPresenter[point.id] = pointPresenter;
   }

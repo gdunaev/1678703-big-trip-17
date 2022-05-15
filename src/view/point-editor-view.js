@@ -22,13 +22,13 @@ const FORMAT_DATE = 'd/m/y H:i';
 // }
 
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
-  console.log('111', typePointState, typePoint, offersState, offers)
+  // console.log('111', typePointState, typePoint, offersState, offers)
 
   // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
   // offers = offersState !== [] ? offersState : offers;
 
   let typePointOffers = [];
-  let currentOffers = offersState !== [] ? offersState : offers;
+  let currentOffers = offersState.length !== 0 ? offersState : offers;
   if(typePointState !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
     // console.log('222', currentOffers)
@@ -37,9 +37,9 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
   } else if (typePoint !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
     // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
-    // console.log('333', currentOffers)
+    //
   }
-
+  // console.log('333', currentOffers, offersState, offers)
   // console.log('11', typePoint, currentOffers, offersAll)
   // if(typePoint === '') {
   //   return '';
@@ -53,7 +53,7 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
               <div class="event__available-offers">
               ${typePointOffers.map((offer, index) => `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index}" ${isDisabled ? 'disabled' : ''}
-                  type="checkbox" name="event-offer-luggage" ${currentOffers.length !== 0 ? (currentOffers.includes(offer.id) ? 'checked' : '') : 'checked'}>
+                  type="checkbox" name="event-offer-luggage" ${currentOffers.includes(offer.id) ? 'checked' : ''}>
                 <label class="event__offer-label" for="event-offer-luggage-${index}">
                   <span class="event__offer-title">${offer.title}</span>
                   +€&nbsp;
@@ -99,7 +99,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   } = state;
 
   // let isDisabled = true;
-  // console.log('11', isSaving)
+  // console.log('11', offers, offersState)
   //отрисовка состояния при смене типа и места назначения.
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
@@ -499,6 +499,7 @@ export default class PointEditorView extends SmartView {
     this._includeDestination();
 
     evt.preventDefault();
+    // debugger;
     this._callback.submitClick(PointEditorView.parseStateToData(this._state));
   }
 
