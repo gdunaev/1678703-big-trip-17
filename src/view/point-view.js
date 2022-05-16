@@ -3,7 +3,7 @@ import he from 'he';
 import { getOnlyDate, getMonthDay, getDateHourMinute, getDateHour, getMinMaxDateDuration } from "../utils/dayjs.js";
 
 
-const createPointItemTemplate = (point) => {
+const createPointItemTemplate = (point, offersAll) => {
   const {
     isFavorite,
     offers,
@@ -23,11 +23,13 @@ const createPointItemTemplate = (point) => {
   const pointDuration = getMinMaxDateDuration(dateFrom, dateTo);
   const basePriceString = String(basePrice);
   const activeFavorite = isFavorite === true ? "event__favorite-btn--active" : "";
+  let offersType = offersAll.find(elem => elem.type === typePoint).offers;
+  offersType = offersType.filter(elem => offers.includes(elem.id));
 
   //здесь показываем только офферы выбранные пользователем (например 2 из 5, или 1 из 3)
   let offersComponent = '';
   if (offers !== []) {
-    for (const elem of offers) {
+    for (const elem of offersType) {
       offersComponent = `${offersComponent}<li class="event__offer">
                                             <span class="event__offer-title">${elem['title']}</span>
                                             &plus;&euro;&nbsp;
@@ -89,7 +91,7 @@ export default class PointView extends AbstractView {
     this._onFavoriteClick = this._onFavoriteClick.bind(this);
   }
   getTemplate() {
-    return createPointItemTemplate(this._point);
+    return createPointItemTemplate(this._point, this._offers);
   }
   _onRollupClick(evt) {
     evt.preventDefault();

@@ -1,7 +1,8 @@
 import { getCumulativeDate } from "../utils/dayjs.js";
 import { AbstractView } from "./abstract.js";
 
-const createInfoTemplate = (points) => {
+const createInfoTemplate = (points, offersAll) => {
+
   //маршрут (все города)
   const mainTitle = points.length === 0 ?
     "" : points.length === 3 ?
@@ -19,7 +20,12 @@ const createInfoTemplate = (points) => {
         (current.offers === undefined ?
           0 :
           current.offers.reduce((sumOffers, currentOffer) => {
-              return sumOffers + currentOffer.price;
+            const type = current.typePoint;
+
+            //поиск офферов по типу и суммирование цен у тех, чьи id указаны в точке
+            const offersType = offersAll.find(elem => elem.type === type).offers;
+            const price = offersType.find(elem => elem.id === currentOffer).price;
+            return sumOffers + price;
           }, 0));
 
     }, 0);
@@ -39,12 +45,13 @@ const createInfoTemplate = (points) => {
 }
 
 export default class InfoView extends AbstractView {
-  constructor(points) {
+  constructor(points, offersAll) {
     super();
     this._points = points;
+    this._offers = offersAll;
   }
   getTemplate() {
-    return createInfoTemplate(this._points);
+    return createInfoTemplate(this._points, this._offers);
   }
 }
 
