@@ -64,9 +64,6 @@ export default class PointPresenter {
   }
 
   setViewState(state) {
-
-    // console.log('222', state)
-
     const resetFormState = () => {
       this._pointViewEditor.updateData({
         isDisabled: false,
@@ -95,7 +92,7 @@ export default class PointPresenter {
     }
   }
 
-  
+
 
   destroy() {
     remove(this._pointView);

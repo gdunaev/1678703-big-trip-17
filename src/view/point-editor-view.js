@@ -301,14 +301,6 @@ export default class PointEditorView extends SmartView {
 
   }
 
-  //перерисовку вызываем только когда полностью указано Наименование точки
-  _checkDectination(dectinationName) {
-    if (this._destinations.some(dectination => dectination.name === dectinationName)) {
-      return false;
-    }
-    return true;
-  }
-
   _includeOffers(justDataUpdating = false) {
     const offers = this._state.typePointState !== '' ?
       this._offers.find((offer) => offer.type === this._state.typePointState).offers :
@@ -334,12 +326,17 @@ export default class PointEditorView extends SmartView {
     }, true);
   }
 
+  //проверяем введенное пользователем название точки, если по нему нашли описание - делаем updateData,
+  //если не нашли (пользователь ввел что-то свое), то при отправке формы подставится последнее сохраненное на форме описание точки.
   _destinationInputHandler(evt) {
     const destination = this._destinations.find(dectination => dectination.name === evt.target.value);
+    if(!destination) {
+      return;
+    }
     evt.preventDefault();
     this.updateData({
       destinationState: destination,
-    }, this._checkDectination(evt.target.value)); //this._checkDectination(evt.target.value)
+    }, false);
   }
 
   _setDateFromPicker() {
@@ -482,24 +479,30 @@ export default class PointEditorView extends SmartView {
   }
 
   _includeDestination() {
-    // console.log('11', this._state)
+    console.log('11', this._state)
     if(this._state.destinationState.name !== '') {
-      this._state.destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
-      return;
+      const destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
+      if(destinationState) {
+        this._state.destinationState = destinationState;
+        console.log('22', this._state)
+        return true;
+      } else {
+        return false;
+      }
     }
     //а здесь ищем объект для прежней точки (если она не менялась)
     this._state.destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
+    return true;
   }
 
-  //вызывает _handleViewAction с добавлением новой точки если передается из PointNewPresenter
+  //вызывает _handleViewAction из trip-presenter`a с добавлением новой точки если передается из PointNewPresenter
   //далее добавляет в общий список точек новую точку и вызывает обзервер Модели - _handleModelEvent с параметром
   _setSubmitHandler(evt) {
+    if (!this._includeDestination()) {
+      return;
+    }
     this._includeOffers();
-
-    this._includeDestination();
-
     evt.preventDefault();
-    // debugger;
     this._callback.submitClick(PointEditorView.parseStateToData(this._state));
   }
 
