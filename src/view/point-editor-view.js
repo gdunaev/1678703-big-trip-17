@@ -6,49 +6,17 @@ import he from 'he';
 
 const FORMAT_DATE = 'd/m/y H:i';
 
-// const includeOffers = (typePointState, typePointOffers, element) => {
-
-//   const offersElement = element.querySelectorAll('.event__offer-checkbox');
-//   let includedOffers = [];
-//   offersElement.forEach((offerElement) => {
-//     const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
-//     if (offerElement.checked) {
-
-//       includedOffers.push(typePointOffers.find(offer => offer.title === title).id);
-//     }
-//   });
-//   console.log('111', includedOffers)
-//   return includedOffers;
-// }
 
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
-  // console.log('111', typePointState, typePoint, offersState, offers)
-
-  // let offers = typePointState !== '' ? offersAll.find((offer) => offer.type === typePointState).offers : typePoint !== '' ? state.offers : [];
-  // offers = offersState !== [] ? offersState : offers;
-
   let typePointOffers = [];
   let currentOffers = offersState.length !== 0 ? offersState : offers;
   if(typePointState !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
-    // console.log('222', currentOffers)
-    // currentOffers = [];
-
   } else if (typePoint !== '') {
     typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
-    // typePointOffers = typePointOffers.filter(elem => currentOffers.includes(elem.id));
-    //
   }
-  // console.log('333', currentOffers, offersState, offers)
-  // console.log('11', typePoint, currentOffers, offersAll)
-  // if(typePoint === '') {
-  //   return '';
-  // }
-  // const typePointOffers = offersAll.find((offer) => offer.type === typePoint).offers;
-  // if (typePointOffers.length === 0) {
-  //   return '';
-  // } else {
-    return `<section class="event__section  event__section--offers ${typePointOffers.length === 0 ? 'visually-hidden' : ''}">
+
+  return `<section class="event__section  event__section--offers ${typePointOffers.length === 0 ? 'visually-hidden' : ''}">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
               ${typePointOffers.map((offer, index) => `<div class="event__offer-selector">
@@ -99,7 +67,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   } = state;
 
   // let isDisabled = true;
-  // console.log('11', offers, offersState)
+  // console.log('11', state.destination, destinationState)
   //отрисовка состояния при смене типа и места назначения.
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
@@ -301,14 +269,6 @@ export default class PointEditorView extends SmartView {
 
   }
 
-  //перерисовку вызываем только когда полностью указано Наименование точки
-  _checkDectination(dectinationName) {
-    if (this._destinations.some(dectination => dectination.name === dectinationName)) {
-      return false;
-    }
-    return true;
-  }
-
   _includeOffers(justDataUpdating = false) {
     const offers = this._state.typePointState !== '' ?
       this._offers.find((offer) => offer.type === this._state.typePointState).offers :
@@ -334,12 +294,17 @@ export default class PointEditorView extends SmartView {
     }, true);
   }
 
+  //проверяем введенное пользователем название точки, если по нему нашли описание - делаем updateData,
+  //если не нашли (пользователь ввел что-то свое), то при отправке формы подставится последнее сохраненное на форме описание точки.
   _destinationInputHandler(evt) {
     const destination = this._destinations.find(dectination => dectination.name === evt.target.value);
+    if(!destination) {
+      return;
+    }
     evt.preventDefault();
     this.updateData({
       destinationState: destination,
-    }, this._checkDectination(evt.target.value)); //this._checkDectination(evt.target.value)
+    }, false);
   }
 
   _setDateFromPicker() {
@@ -481,25 +446,39 @@ export default class PointEditorView extends SmartView {
     return createPointEditTemplate(this._state, this._offers, this._destinations);
   }
 
+  //вызывается при отправке формы, проверяем выбрал ли пользователь точку, а если выбрал, то
+  //корректно ли указал название. Если по названию не смогли найти объект с описанием точки -
+  //не отправляем форму.
   _includeDestination() {
-    // console.log('11', this._state)
+
+    //если название точки менялось
     if(this._state.destinationState.name !== '') {
-      this._state.destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
-      return;
+      const destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
+      if(destinationState) {
+        this._state.destinationState = destinationState;
+        return true;
+      } else {
+        return false;
+      }
     }
-    //а здесь ищем объект для прежней точки (если она не менялась)
-    this._state.destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
+    //а здесь ищем объект для прежней точки (если она не менялась), у новой точки оно пустое.
+    const destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
+    if(destination) {
+      this._state.destination = destination;
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  //вызывает _handleViewAction с добавлением новой точки если передается из PointNewPresenter
+  //вызывает _handleViewAction из trip-presenter`a с добавлением новой точки если передается из PointNewPresenter
   //далее добавляет в общий список точек новую точку и вызывает обзервер Модели - _handleModelEvent с параметром
   _setSubmitHandler(evt) {
-    this._includeOffers();
-
-    this._includeDestination();
-
     evt.preventDefault();
-    // debugger;
+    if (!this._includeDestination()) {
+      return;
+    }
+    this._includeOffers();
     this._callback.submitClick(PointEditorView.parseStateToData(this._state));
   }
 

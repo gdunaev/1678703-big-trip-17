@@ -93,12 +93,23 @@ const getCumulativeDate = (dateMin, dateMax) => {
 }
 
 const getPastPoints = (points) => {
-    const pastPoint = points.filter((currentPoint) => { return dayjs().isAfter(currentPoint.dateTo) });
+
+  //Past — список пройденных точек маршрута, т. е. точек у которых дата окончания маршрута меньше, чем текущая.
+  //либо у которых дата начала меньше текущей даты, а дата окончания — больше
+    const pastPoint = points.filter((currentPoint) => { return dayjs().isAfter(currentPoint.dateTo) ||
+      (dayjs().isAfter(currentPoint.dateFrom) && dayjs().isBefore(currentPoint.dateTo))
+     });
     return pastPoint;
 }
 
 const getFuturePoints = (points) => {
-    const futurePoint = points.filter((currentPoint) => { return dayjs().isBefore(currentPoint.dateFrom, 'D') || dayjs().isSame(currentPoint.dateFrom, 'D') });
+
+  //Future — список запланированных точек маршрута, т. е. точек, у которых дата начала события больше или равна текущей дате;
+  //либо у которых дата начала меньше текущей даты, а дата окончания — больше
+    const futurePoint = points.filter((currentPoint) => {
+      return (dayjs().isBefore(currentPoint.dateFrom) || dayjs().isSame(currentPoint.dateFrom)) ||
+      (dayjs().isAfter(currentPoint.dateFrom) && dayjs().isBefore(currentPoint.dateTo))
+     });
     return futurePoint;
 }
 
