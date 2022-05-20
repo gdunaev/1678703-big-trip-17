@@ -1,10 +1,10 @@
-import TripPresenter from "./presenter/trip-presenter.js";
+import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import {MenuItem, RenderPosition, UpdateType} from './utils/const.js';
-import { render, remove } from "./utils/render.js";
-import SiteMenuView from "./view/site-menu-view.js";
+import { render, remove } from './utils/render.js';
+import SiteMenuView from './view/site-menu-view.js';
 import StatisticsView from './view/statistics-view.js';
 import Api from './utils/api.js';
 
@@ -59,9 +59,9 @@ presenter.start();
 
 //обработчик создания новой точки - New Event
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
-    presenter.createPoint();
-  });
+  evt.preventDefault();
+  presenter.createPoint();
+});
 
 
 //загрузка точек с сервера

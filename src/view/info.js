@@ -1,12 +1,13 @@
-import { getCumulativeDate } from "../utils/dayjs.js";
-import { AbstractView } from "./abstract.js";
+import { getCumulativeDate } from '../utils/dayjs.js';
+import { AbstractView } from './abstract.js';
 
 const createInfoTemplate = (points, offersAll) => {
 
   //маршрут (все города)
+  // eslint-disable-next-line no-nested-ternary
   const mainTitle = points.length === 0 ?
-    "" : points.length === 3 ?
-      points.map((currentPoint) => { return `${currentPoint.destination.name}` }).join(` &mdash; `) :
+    '' : points.length === 3 ?
+      points.map((currentPoint) => `${currentPoint.destination.name}`).join(' &mdash; ') :
       `${points[0].destination.name} &mdash; ... &mdash; ${points[points.length - 1].destination.name}`;
 
   //даты от и до
@@ -15,20 +16,17 @@ const createInfoTemplate = (points, offersAll) => {
   //общая стоимость
   let fullCost = 0;
   fullCost = points.length === 0 ?
-    0 : points.reduce((sum, current) => {
-      return sum + current.basePrice +
+    0 : points.reduce((sum, current) => sum + current.basePrice +
         (current.offers === undefined ?
           0 :
           current.offers.reduce((sumOffers, currentOffer) => {
             const type = current.typePoint;
 
             //поиск офферов по типу и суммирование цен у тех, чьи id указаны в точке
-            const offersType = offersAll.find(elem => elem.type === type).offers;
-            const price = offersType.find(elem => elem.id === currentOffer).price;
+            const offersType = offersAll.find((elem) => elem.type === type).offers;
+            const price = offersType.find((elem) => elem.id === currentOffer).price;
             return sumOffers + price;
-          }, 0));
-
-    }, 0);
+          }, 0)), 0);
 
 
   return ` <section class="trip-main__trip-info  trip-info">
@@ -42,7 +40,7 @@ const createInfoTemplate = (points, offersAll) => {
     Total: &euro;&nbsp;<span class="trip-info__cost-value">${fullCost}</span>
   </p>
 </section>`;
-}
+};
 
 export default class InfoView extends AbstractView {
   constructor(points, offersAll) {
@@ -50,6 +48,7 @@ export default class InfoView extends AbstractView {
     this._points = points;
     this._offers = offersAll;
   }
+
   getTemplate() {
     return createInfoTemplate(this._points, this._offers);
   }

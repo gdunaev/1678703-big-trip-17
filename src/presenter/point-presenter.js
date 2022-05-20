@@ -86,13 +86,11 @@ export default class PointPresenter {
         });
         break;
       case State.ABORTING:
-          this._pointView.shake(resetFormState);
-          this._pointViewEditor.shake(resetFormState);
-          break;
+        this._pointView.shake(resetFormState);
+        this._pointViewEditor.shake(resetFormState);
+        break;
     }
   }
-
-
 
   destroy() {
     remove(this._pointView);
@@ -100,11 +98,11 @@ export default class PointPresenter {
   }
 
   _changeFavoriteButton() {
-      this._changeData(
-        UserAction.UPDATE,
-        UpdateType.PATCH,
-        Object.assign({}, this._point, { isFavorite: !this._point.isFavorite, },),
-      );
+    this._changeData(
+      UserAction.UPDATE,
+      UpdateType.PATCH,
+      Object.assign({}, this._point, { isFavorite: !this._point.isFavorite, },),
+    );
   }
 
   resetView() {

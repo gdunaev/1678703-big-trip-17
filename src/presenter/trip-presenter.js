@@ -1,13 +1,13 @@
-import ListEmptyView from "../view/list-empty.js";
-import { render, remove } from "../utils/render.js";
-import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from "../utils/common.js";
-import InfoView from "../view/info.js";
-import PointPresenter, {State as PresenterViewState} from "./point-presenter.js";
-import FiltersView from "../view/filter-view.js";
-import { getFuturePoints, getPastPoints } from "../utils/dayjs.js";
-import SortView from "../view/sort-view.js";
-import { UpdateType, UserAction, FilterType, RenderPosition, SortMode } from "../utils/const.js";
-import PointNewPresenter from "./point-new-presenter.js";
+import ListEmptyView from '../view/list-empty.js';
+import { render, remove } from '../utils/render.js';
+import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '../utils/common.js';
+import InfoView from '../view/info.js';
+import PointPresenter, {State as PresenterViewState} from './point-presenter.js';
+import FiltersView from '../view/filter-view.js';
+import { getFuturePoints, getPastPoints } from '../utils/dayjs.js';
+import SortView from '../view/sort-view.js';
+import { UpdateType, UserAction, FilterType, RenderPosition, SortMode } from '../utils/const.js';
+import PointNewPresenter from './point-new-presenter.js';
 import LoadingView from '../view/loading.js';
 
 
@@ -67,23 +67,21 @@ export default class TripPresenter {
         points = getFuturePoints(points);
         break;
       case FilterType.EVERYTHING:
-        points = points;
         break;
     }
 
     //здесь Сортировка (день, время, цена)
-      switch (this._sortMode) {
-        case SortMode.DAY:
-          points = getSortDayPoints(points);
-          break;
-        case SortMode.TIME:
-          points = getSortTimePoints(points);
-          break;
-        case SortMode.PRICE:
-          points = getSortPricePoints(points);
-          break;
-      }
-
+    switch (this._sortMode) {
+      case SortMode.DAY:
+        points = getSortDayPoints(points);
+        break;
+      case SortMode.TIME:
+        points = getSortTimePoints(points);
+        break;
+      case SortMode.PRICE:
+        points = getSortPricePoints(points);
+        break;
+    }
     return points;
   }
 
@@ -220,7 +218,7 @@ export default class TripPresenter {
   _renderFilters() {
     const tripControlsFilters = document.querySelector('.trip-controls__filters');
     render(tripControlsFilters, this._filtersView, RenderPosition.BEFOREEND);
-    this._filtersView.setFilterChangeHandler(() => { this._handleFilterChange() });
+    this._filtersView.setFilterChangeHandler(() => { this._handleFilterChange();});
   }
 
 

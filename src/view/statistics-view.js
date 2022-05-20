@@ -23,10 +23,9 @@ const ConstantChart = {
   TEXT_MONEY: 'MONEY',
   TEXT_TYPE: 'TYPE',
   TEXT_TIME: 'TYPE',
-}
+};
 
-const createStatisticsTemplate = () => {
-  return `<section class="statistics">
+const createStatisticsTemplate = () => `<section class="statistics">
             <h2>Trip statistics</h2>
 
             <!-- Пример диаграмм -->
@@ -44,7 +43,6 @@ const createStatisticsTemplate = () => {
               <canvas class="statistics__chart statistics__chart--time" id="time" width="900"></canvas>
             </div>
           </section>`;
-};
 
 const renderMoneyChart = (moneyCtx, points) => {
   const {sum, types} = getSumAndTypes(points);
@@ -112,7 +110,7 @@ const renderMoneyChart = (moneyCtx, points) => {
         enabled: false,
       },
     },
-  })
+  });
 };
 
 const renderTypeChart = (typeCtx, points) => {
@@ -250,9 +248,8 @@ const renderTimeChart = (timeCtx, points) => {
         enabled: false,
       },
     },
-  })
+  });
 };
-
 
 
 export default class StatisticsView extends SmartView {

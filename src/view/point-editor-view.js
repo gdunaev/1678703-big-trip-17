@@ -9,11 +9,11 @@ const FORMAT_DATE = 'd/m/y H:i';
 
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
   let typePointOffers = [];
-  let currentOffers = offersState.length !== 0 ? offersState : offers;
+  const currentOffers = offersState.length !== 0 ? offersState : offers;
   if(typePointState !== '') {
-    typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
+    typePointOffers = offersAll.find((elem) => elem.type === typePointState).offers;
   } else if (typePoint !== '') {
-    typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
+    typePointOffers = offersAll.find((elem) => elem.type === typePoint).offers;
   }
 
   return `<section class="event__section  event__section--offers ${typePointOffers.length === 0 ? 'visually-hidden' : ''}">
@@ -30,7 +30,6 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
               </div>`).join(' ')}
               </div>
           </section>`;
-  // }
 };
 
 
@@ -51,6 +50,25 @@ const getDescriptionComponent = (destination) => {
   return '';
 };
 
+const getDateFromEdit = (dateFromState, state) => {
+  if(dateFromState !== '') {
+    return dateFromState;
+  }
+  if(state.dateFrom !== '') {
+    return getDateEdit(state.dateFrom);
+  }
+  return '';
+};
+
+const getDateToEdit = (dateToState, state) => {
+  if(dateToState !== '') {
+    return dateToState;
+  }
+  if(state.dateTo !== '') {
+    return getDateEdit(state.dateTo);
+  }
+  return '';
+};
 
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const { typePoint,
@@ -76,15 +94,13 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 
   const destination = destinationState.name !== '' ? destinationState : state.destination;
   const name = destination === undefined ? '' : destination.name;
-  const dateFromEdit = dateFromState !== '' ? dateFromState : state.dateFrom !== '' ? getDateEdit(state.dateFrom) : '';
-  const dateToEdit = dateToState !== '' ? dateToState : state.dateTo !== '' ? getDateEdit(state.dateTo) : '';
+  const dateFromEdit = getDateFromEdit(dateFromState, state);
+  const dateToEdit = getDateToEdit(dateToState, state);
   const price = priceState !== '' ? priceState : state.basePrice;
 
   //подставляем все наименования точек
   let dataListTemplate = '';
-  destinationsAll.forEach((destination) => {
-    return dataListTemplate = dataListTemplate + ` <option value="${destination.name}">${destination.name}</option>`;
-  });
+  destinationsAll.forEach((destination) => dataListTemplate = `${dataListTemplate  } <option value='${destination.name}'>${destination.name}</option>`);
 
   //иконки для типов точек
   typePointIconTemplate = typePointIconTemplate !== '' ? `img/icons/${typePointIconTemplate}.png` : '';
@@ -181,8 +197,8 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" min = "0" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? "Saving..." : "Save"}</button>
-        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? "Deleting..." : "Delete"}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -200,7 +216,6 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   </ul>
   `;
 };
-
 
 
 export default class PointEditorView extends SmartView {
@@ -270,11 +285,11 @@ export default class PointEditorView extends SmartView {
       this._offers.find((offer) => offer.type === this._state.typePoint).offers;
 
     const offersElement = this.getElement().querySelectorAll('.event__offer-checkbox');
-    let includedOffers = [];
+    const includedOffers = [];
     offersElement.forEach((offerElement) => {
       const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
       if (offerElement.checked) {
-        includedOffers.push(offers.find(offer => offer.title === title).id);
+        includedOffers.push(offers.find((offer) => offer.title === title).id);
       }
     });
     this.updateData({
@@ -292,7 +307,7 @@ export default class PointEditorView extends SmartView {
   //проверяем введенное пользователем название точки, если по нему нашли описание - делаем updateData,
   //если не нашли (пользователь ввел что-то свое), то при отправке формы подставится последнее сохраненное на форме описание точки.
   _destinationInputHandler(evt) {
-    const destination = this._destinations.find(dectination => dectination.name === evt.target.value);
+    const destination = this._destinations.find((dectination) => dectination.name === evt.target.value);
     if(!destination) {
       return;
     }
@@ -308,12 +323,12 @@ export default class PointEditorView extends SmartView {
       this._dateFromPicker = null;
     }
     this._dateFromPicker = flatpickr(
-      this.getElement().querySelector(`#event-start-time-1`), {
-      dateFormat: FORMAT_DATE,
-      enableTime: true,
-      defaultDate: this.getElement().querySelector(`#event-start-time-1`).value,
-      onChange: this._dateFromChangeHandler,
-    },
+      this.getElement().querySelector('#event-start-time-1'), {
+        dateFormat: FORMAT_DATE,
+        enableTime: true,
+        defaultDate: this.getElement().querySelector('#event-start-time-1').value,
+        onChange: this._dateFromChangeHandler,
+      },
     );
   }
 
@@ -323,18 +338,18 @@ export default class PointEditorView extends SmartView {
       this._dateToPicker = null;
     }
     this._dateToPicker = flatpickr(
-      this.getElement().querySelector(`#event-end-time-1`), {
-      dateFormat: FORMAT_DATE,
-      enableTime: true,
-      defaultDate: this.getElement().querySelector(`#event-end-time-1`).value,
-      onChange: this._dateToChangeHandler,
-    },
+      this.getElement().querySelector('#event-end-time-1'), {
+        dateFormat: FORMAT_DATE,
+        enableTime: true,
+        defaultDate: this.getElement().querySelector('#event-end-time-1').value,
+        onChange: this._dateToChangeHandler,
+      },
     );
   }
 
   _checkDataMinMax(fromTo) {
-    const dataFrom = this.getElement().querySelector(`#event-start-time-1`);
-    const dataTo = this.getElement().querySelector(`#event-end-time-1`);
+    const dataFrom = this.getElement().querySelector('#event-start-time-1');
+    const dataTo = this.getElement().querySelector('#event-end-time-1');
     if (dataFrom.value && dataTo.value && compareDates(dataFrom.value, dataTo.value) < 0) {
       fromTo === 'to' ? dataTo.value = '' : dataFrom.value = '';
     }
@@ -346,7 +361,7 @@ export default class PointEditorView extends SmartView {
       return;
     }
     this.updateData({
-      dateFromState: this.getElement().querySelector(`#event-start-time-1`).value,
+      dateFromState: this.getElement().querySelector('#event-start-time-1').value,
       dateFromPicker: this._dateFromPicker.selectedDates,
     });
   }
@@ -356,7 +371,7 @@ export default class PointEditorView extends SmartView {
       return;
     }
     this.updateData({
-      dateToState: this.getElement().querySelector(`#event-end-time-1`).value,
+      dateToState: this.getElement().querySelector('#event-end-time-1').value,
       dateToPicker: this._dateToPicker.selectedDates,
     });
   }
@@ -389,22 +404,22 @@ export default class PointEditorView extends SmartView {
   static parseDataToState(data) {
     return Object.assign({},
       data, {
-      typePointState: '',
-      destinationState: {
-        name: '',
-        description: '',
-        pictures: []
+        typePointState: '',
+        destinationState: {
+          name: '',
+          description: '',
+          pictures: []
+        },
+        dateFromState: '',
+        dateToState: '',
+        dateFromPicker: '',
+        dateToPicker: '',
+        priceState: '',
+        offersState: [],
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
-      dateFromState: '',
-      dateToState: '',
-      dateFromPicker: '',
-      dateToPicker: '',
-      priceState: '',
-      offersState: [],
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    },
     );
   }
 
@@ -448,7 +463,7 @@ export default class PointEditorView extends SmartView {
 
     //если название точки менялось
     if(this._state.destinationState.name !== '') {
-      const destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
+      const destinationState = this._destinations.find((dectination) => dectination.name === this._state.destinationState.name);
       if(destinationState) {
         this._state.destinationState = destinationState;
         return true;
@@ -457,7 +472,7 @@ export default class PointEditorView extends SmartView {
       }
     }
     //а здесь ищем объект для прежней точки (если она не менялась), у новой точки оно пустое.
-    const destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
+    const destination = this._destinations.find((dectination) => dectination.name === this._state.destination.name);
     if(destination) {
       this._state.destination = destination;
       return true;

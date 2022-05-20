@@ -20,7 +20,7 @@ export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
-}
+};
 
 export const SortMode = {
   DAY: 'day',
@@ -28,7 +28,7 @@ export const SortMode = {
   TIME: 'time',
   OFFER: 'offer',
   EVENT: 'event',
-}
+};
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',

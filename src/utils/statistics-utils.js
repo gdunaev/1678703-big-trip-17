@@ -1,4 +1,6 @@
-import { getPointDurationMinute } from "./dayjs";
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-return-assign */
+import { getPointDurationMinute } from './dayjs';
 
 const getSumAndTypes = (points) => {
 
@@ -13,7 +15,7 @@ const getSumAndTypes = (points) => {
     types: [],
     sum: [],
   };
-  Object.entries(sum).sort((a, b) => { return b[1] - a[1] }).forEach(elem => {
+  Object.entries(sum).sort((a, b) => b[1] - a[1]).forEach((elem) => {
     sumTypesPoint.types.push(elem[0]);
     sumTypesPoint.sum.push(elem[1]);
   });
@@ -34,7 +36,7 @@ const getTypesCount = (points) => {
     types: [],
     count: [],
   };
-  Object.entries(count).sort((a, b) => { return b[1] - a[1] }).forEach(elem => {
+  Object.entries(count).sort((a, b) => b[1] - a[1]).forEach((elem) => {
     typesCount.types.push(elem[0]);
     typesCount.count.push(elem[1]);
   });
@@ -47,8 +49,7 @@ const getTime = (points) => {
   //отбор в отдельный объект с суммированием количества минут getPointDurationMinute
   const count = {};
   points.filter(({ typePoint, dateFrom, dateTo }) => {
-    (count[typePoint]) ?
-      count[typePoint] = count[typePoint] + getPointDurationMinute(dateFrom, dateTo) :
+    (count[typePoint]) ? count[typePoint] = count[typePoint] + getPointDurationMinute(dateFrom, dateTo) :
       count[typePoint] = getPointDurationMinute(dateFrom, dateTo);
   });
 
@@ -57,7 +58,7 @@ const getTime = (points) => {
     types: [],
     time: [],
   };
-  Object.entries(count).sort((a, b) => { return b[1] - a[1] }).forEach(elem => {
+  Object.entries(count).sort((a, b) => b[1] - a[1]).forEach((elem) => {
     typesTime.types.push(elem[0]);
     typesTime.time.push(elem[1]);
   });
@@ -65,5 +66,5 @@ const getTime = (points) => {
   return typesTime;
 };
 
-export { getSumAndTypes, getTypesCount, getTime }
+export { getSumAndTypes, getTypesCount, getTime };
 
