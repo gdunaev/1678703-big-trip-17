@@ -66,8 +66,6 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
     offers,
   } = state;
 
-  // let isDisabled = true;
-  // console.log('11', state.destination, destinationState)
   //отрисовка состояния при смене типа и места назначения.
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
@@ -93,7 +91,6 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 
   //описание и фото для названия точки
   const descriptionComponent = getDescriptionComponent(destination);
-  // console.log('333', destination)
 
   return `<ul class="trip-events__list">
   <li class="trip-events__item">
@@ -212,8 +209,8 @@ export default class PointEditorView extends SmartView {
     this._point = point;
     this._offers = offers;
     this._destinations = destinations;
-    this._setSubmitHandler = this._setSubmitHandler.bind(this);
-    this._setRollupClick = this._setRollupClick.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
+    this._rollupClick = this._rollupClick.bind(this);
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -264,9 +261,7 @@ export default class PointEditorView extends SmartView {
     this._setDateToPicker();
     this.getElement().querySelector('#event-destination-1').addEventListener('input', this._destinationInputHandler);
     this.getElement().querySelector('#event-price-1').addEventListener('input', this._priceInputHandler);
-
     this.getElement().querySelector('.event__available-offers').addEventListener('click', this._offerClickHandler);
-
   }
 
   _includeOffers(justDataUpdating = false) {
@@ -449,7 +444,7 @@ export default class PointEditorView extends SmartView {
   //вызывается при отправке формы, проверяем выбрал ли пользователь точку, а если выбрал, то
   //корректно ли указал название. Если по названию не смогли найти объект с описанием точки -
   //не отправляем форму.
-  _includeDestination() {
+  _isDestinationCorrect() {
 
     //если название точки менялось
     if(this._state.destinationState.name !== '') {
@@ -473,9 +468,9 @@ export default class PointEditorView extends SmartView {
 
   //вызывает _handleViewAction из trip-presenter`a с добавлением новой точки если передается из PointNewPresenter
   //далее добавляет в общий список точек новую точку и вызывает обзервер Модели - _handleModelEvent с параметром
-  _setSubmitHandler(evt) {
+  _submitHandler(evt) {
     evt.preventDefault();
-    if (!this._includeDestination()) {
+    if (!this._isDestinationCorrect()) {
       return;
     }
     this._includeOffers();
@@ -484,16 +479,16 @@ export default class PointEditorView extends SmartView {
 
   setSubmitFormHandler(callback) {
     this._callback.submitClick = callback;
-    this.getElement().querySelector('.event').addEventListener('submit', this._setSubmitHandler);
+    this.getElement().querySelector('.event').addEventListener('submit', this._submitHandler);
   }
 
-  _setRollupClick(evt) {
+  _rollupClick(evt) {
     evt.preventDefault();
     this._callback.rollupClick();
   }
 
   setRollupClickHandler(callback) {
     this._callback.rollupClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._setRollupClick);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupClick);
   }
 }

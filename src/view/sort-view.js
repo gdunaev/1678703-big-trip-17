@@ -38,7 +38,6 @@ export default class SortView extends AbstractView {
         this._sortModeChangeHandler = this._sortModeChangeHandler.bind(this);
         this._sortMode = null;
         this._currentSortType = currentSortType;
-        // console.log('22', currentSortType)
     }
 
     getTemplate() {
@@ -49,9 +48,7 @@ export default class SortView extends AbstractView {
         if (evt.target.tagName !== 'INPUT') {
             return;
         }
-
         this._sortMode = SortMode[evt.target.value.replace('sort-', '').toUpperCase()];
-        // console.log(this._sortMode)
         this._callback.sortModeChange(this._sortMode);
     }
 

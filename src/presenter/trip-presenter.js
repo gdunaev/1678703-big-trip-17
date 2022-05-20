@@ -11,7 +11,6 @@ import PointNewPresenter from "./point-new-presenter.js";
 import LoadingView from '../view/loading.js';
 
 
-
 export default class TripPresenter {
   constructor(tripEventsMain, pointsModel, filterModel, api) {
     this._isEmpty = true;
@@ -100,16 +99,13 @@ export default class TripPresenter {
         break;
       case UserAction.ADD:
         this._pointNewPresenter.setSaving();
-        // debugger;
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         }).catch(() => {
-          // debugger
           this._pointNewPresenter.setAborting();
         });
         break;
       case UserAction.DELETE:
-        // console.log('333',  this._pointPresenter)
         this._pointPresenter[update.id].setViewState(PresenterViewState.DELETING);
         this._api.deletePoint(update).then(() => {
           this._pointsModel.deletePoint(updateType, update);

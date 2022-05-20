@@ -62,11 +62,9 @@ export default class PointNewPresenter {
           isDisabled: true,
           isSaving: true,
         });
-        // console.log('333', this._pointViewEditor)
     }
 
     setAborting() {
-      // console.log('222', this._pointViewEditor)
         const resetFormState = () => {
                 this._pointViewEditor.updateData({
                 isDisabled: false,
@@ -74,7 +72,6 @@ export default class PointNewPresenter {
                 isDeleting: false,
                 });
         };
-        // console.log(this._pointViewEditor)
         this._pointViewEditor.shake(resetFormState);
     }
 
