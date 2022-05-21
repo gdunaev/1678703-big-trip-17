@@ -1,9 +1,7 @@
-import { AbstractView } from "./abstract.js";
-import { SortMode } from "../utils/const.js";
+import { AbstractView } from './abstract.js';
+import { SortMode } from '../utils/const.js';
 
-const createSortTemplate = (currentSortType) => {
-
-    return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+const createSortTemplate = (currentSortType) => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <div class="trip-sort__item  trip-sort__item--day">
       <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortMode.DAY ? 'checked' : ''}>
       <label class="trip-sort__btn" for="sort-day">Day</label>
@@ -30,33 +28,28 @@ const createSortTemplate = (currentSortType) => {
     </div>
   </form>`;
 
-};
-
 export default class SortView extends AbstractView {
-    constructor(currentSortType) {
-        super();
-        this._sortModeChangeHandler = this._sortModeChangeHandler.bind(this);
-        this._sortMode = null;
-        this._currentSortType = currentSortType;
-        // console.log('22', currentSortType)
-    }
+  constructor(currentSortType) {
+    super();
+    this._sortModeChangeHandler = this._sortModeChangeHandler.bind(this);
+    this._sortMode = null;
+    this._currentSortType = currentSortType;
+  }
 
-    getTemplate() {
-        return createSortTemplate(this._currentSortType); //ДОРАБОТАТЬ!
-    }
+  getTemplate() {
+    return createSortTemplate(this._currentSortType); //ДОРАБОТАТЬ!
+  }
 
-    _sortModeChangeHandler(evt) {
-        if (evt.target.tagName !== 'INPUT') {
-            return;
-        }
-
-        this._sortMode = SortMode[evt.target.value.replace('sort-', '').toUpperCase()];
-        // console.log(this._sortMode)
-        this._callback.sortModeChange(this._sortMode);
+  _sortModeChangeHandler(evt) {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
     }
+    this._sortMode = SortMode[evt.target.value.replace('sort-', '').toUpperCase()];
+    this._callback.sortModeChange(this._sortMode);
+  }
 
-    setSortModeChangeHandler(callback) {
-        this._callback.sortModeChange = callback;
-        this.getElement().addEventListener('click', this._sortModeChangeHandler);
-    }
+  setSortModeChangeHandler(callback) {
+    this._callback.sortModeChange = callback;
+    this.getElement().addEventListener('click', this._sortModeChangeHandler);
+  }
 }

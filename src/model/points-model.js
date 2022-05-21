@@ -23,12 +23,6 @@ export default class PointsModel extends Observer {
     return this._offers;
   }
 
-  getOffers(type) {
-    return  this._offers.find((offer) => {
-      offer.type === type;
-    });
-  }
-
   getDestinationsAll() {
     return  this._destinations;
   }
@@ -74,7 +68,7 @@ export default class PointsModel extends Observer {
   }
 
   static adaptToClient(point) {
-    let adaptedPoint = Object.assign(
+    const adaptedPoint = Object.assign(
       {},
       point,
       {
@@ -116,7 +110,6 @@ export default class PointsModel extends Observer {
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateTo;
-    // console.log('111', adaptedPoint)
     return adaptedPoint;
   }
 }

@@ -1,6 +1,6 @@
-import { AbstractView } from "./abstract.js";
+import { AbstractView } from './abstract.js';
 import he from 'he';
-import { getOnlyDate, getMonthDay, getDateHourMinute, getDateHour, getMinMaxDateDuration } from "../utils/dayjs.js";
+import { getOnlyDate, getMonthDay, getDateHourMinute, getDateHour, getMinMaxDateDuration } from '../utils/dayjs.js';
 
 
 const createPointItemTemplate = (point, offersAll) => {
@@ -22,9 +22,9 @@ const createPointItemTemplate = (point, offersAll) => {
   const dateToHour = getDateHour(dateTo);
   const pointDuration = getMinMaxDateDuration(dateFrom, dateTo);
   const basePriceString = String(basePrice);
-  const activeFavorite = isFavorite === true ? "event__favorite-btn--active" : "";
-  let offersType = offersAll.find(elem => elem.type === typePoint).offers;
-  offersType = offersType.filter(elem => offers.includes(elem.id));
+  const activeFavorite = isFavorite === true ? 'event__favorite-btn--active' : '';
+  let offersType = offersAll.find((elem) => elem.type === typePoint).offers;
+  offersType = offersType.filter((elem) => offers.includes(elem.id));
 
   //здесь показываем только офферы выбранные пользователем (например 2 из 5, или 1 из 3)
   let offersComponent = '';
@@ -90,13 +90,16 @@ export default class PointView extends AbstractView {
     this._onRollupClick = this._onRollupClick.bind(this);
     this._onFavoriteClick = this._onFavoriteClick.bind(this);
   }
+
   getTemplate() {
     return createPointItemTemplate(this._point, this._offers);
   }
+
   _onRollupClick(evt) {
     evt.preventDefault();
     this._callback.rollupClick();
   }
+
   setRollupClickHandler(callback) {
     this._callback.rollupClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollupClick);

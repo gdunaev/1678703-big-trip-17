@@ -3,7 +3,6 @@ import {render, replace, remove} from '../utils/render.js';
 import {FilterType, UpdateType, RenderPosition} from '../utils/const.js';
 
 
-
 export default class FilterPresenter {
   constructor(filterContainer, filterModel, pointsModel) {
     this._filterContainer = filterContainer;

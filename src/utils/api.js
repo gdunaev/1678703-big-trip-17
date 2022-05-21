@@ -25,25 +25,25 @@ export default class Api {
         this.getDestinations(),
         this.getOffers(),
       ])
-    .then((value) => value);
+      .then((value) => value);
   }
 
   getPoints() {
     return this._load({url: 'points'})
       .then(Api.toJSON)
-      .then((points) => points.map(PointModel.adaptToClient));;
+      .then((points) => points.map(PointModel.adaptToClient));
   }
 
   getDestinations() {
     return this._load({url: 'destinations'})
       .then(Api.toJSON)
-      .then((destinations) => destinations);;
+      .then((destinations) => destinations);
   }
 
   getOffers() {
     return this._load({url: 'offers'})
       .then(Api.toJSON)
-      .then((offers) => offers);;
+      .then((offers) => offers);
   }
 
   updatePoint(point) {

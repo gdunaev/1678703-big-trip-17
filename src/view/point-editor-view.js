@@ -9,11 +9,11 @@ const FORMAT_DATE = 'd/m/y H:i';
 
 const getOfferComponent = (offers, offersState, offersAll, typePointState, typePoint, isDisabled) => {
   let typePointOffers = [];
-  let currentOffers = offersState.length !== 0 ? offersState : offers;
+  const currentOffers = offersState.length !== 0 ? offersState : offers;
   if(typePointState !== '') {
-    typePointOffers = offersAll.find(elem => elem.type === typePointState).offers;
+    typePointOffers = offersAll.find((elem) => elem.type === typePointState).offers;
   } else if (typePoint !== '') {
-    typePointOffers = offersAll.find(elem => elem.type === typePoint).offers;
+    typePointOffers = offersAll.find((elem) => elem.type === typePoint).offers;
   }
 
   return `<section class="event__section  event__section--offers ${typePointOffers.length === 0 ? 'visually-hidden' : ''}">
@@ -30,7 +30,6 @@ const getOfferComponent = (offers, offersState, offersAll, typePointState, typeP
               </div>`).join(' ')}
               </div>
           </section>`;
-  // }
 };
 
 
@@ -51,6 +50,25 @@ const getDescriptionComponent = (destination) => {
   return '';
 };
 
+const getDateFromEdit = (dateFromState, state) => {
+  if(dateFromState !== '') {
+    return dateFromState;
+  }
+  if(state.dateFrom !== '') {
+    return getDateEdit(state.dateFrom);
+  }
+  return '';
+};
+
+const getDateToEdit = (dateToState, state) => {
+  if(dateToState !== '') {
+    return dateToState;
+  }
+  if(state.dateTo !== '') {
+    return getDateEdit(state.dateTo);
+  }
+  return '';
+};
 
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const { typePoint,
@@ -66,8 +84,6 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
     offers,
   } = state;
 
-  // let isDisabled = true;
-  // console.log('11', state.destination, destinationState)
   //отрисовка состояния при смене типа и места назначения.
   let typePointIconTemplate = typePointState !== '' ? typePointState : typePoint.toLowerCase();
   const typePointTemplate = typePointState !== '' ? typePointState : typePoint;
@@ -78,22 +94,20 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 
   const destination = destinationState.name !== '' ? destinationState : state.destination;
   const name = destination === undefined ? '' : destination.name;
-  const dateFromEdit = dateFromState !== '' ? dateFromState : state.dateFrom !== '' ? getDateEdit(state.dateFrom) : '';
-  const dateToEdit = dateToState !== '' ? dateToState : state.dateTo !== '' ? getDateEdit(state.dateTo) : '';
+  const dateFromEdit = getDateFromEdit(dateFromState, state);
+  const dateToEdit = getDateToEdit(dateToState, state);
   const price = priceState !== '' ? priceState : state.basePrice;
 
   //подставляем все наименования точек
   let dataListTemplate = '';
-  destinationsAll.forEach((destination) => {
-    return dataListTemplate = dataListTemplate + ` <option value="${destination.name}">${destination.name}</option>`;
-  });
+  // eslint-disable-next-line no-return-assign
+  destinationsAll.forEach((currentDestination) => dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`);
 
   //иконки для типов точек
   typePointIconTemplate = typePointIconTemplate !== '' ? `img/icons/${typePointIconTemplate}.png` : '';
 
   //описание и фото для названия точки
   const descriptionComponent = getDescriptionComponent(destination);
-  // console.log('333', destination)
 
   return `<ul class="trip-events__list">
   <li class="trip-events__item">
@@ -184,8 +198,8 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" min = "0" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? "Saving..." : "Save"}</button>
-        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? "Deleting..." : "Delete"}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -205,15 +219,14 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 };
 
 
-
 export default class PointEditorView extends SmartView {
   constructor(point, offers, destinations) {
     super();
     this._point = point;
     this._offers = offers;
     this._destinations = destinations;
-    this._setSubmitHandler = this._setSubmitHandler.bind(this);
-    this._setRollupClick = this._setRollupClick.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
+    this._rollupClick = this._rollupClick.bind(this);
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -264,9 +277,7 @@ export default class PointEditorView extends SmartView {
     this._setDateToPicker();
     this.getElement().querySelector('#event-destination-1').addEventListener('input', this._destinationInputHandler);
     this.getElement().querySelector('#event-price-1').addEventListener('input', this._priceInputHandler);
-
     this.getElement().querySelector('.event__available-offers').addEventListener('click', this._offerClickHandler);
-
   }
 
   _includeOffers(justDataUpdating = false) {
@@ -275,11 +286,11 @@ export default class PointEditorView extends SmartView {
       this._offers.find((offer) => offer.type === this._state.typePoint).offers;
 
     const offersElement = this.getElement().querySelectorAll('.event__offer-checkbox');
-    let includedOffers = [];
+    const includedOffers = [];
     offersElement.forEach((offerElement) => {
       const title = offerElement.parentElement.querySelector('.event__offer-title').textContent;
       if (offerElement.checked) {
-        includedOffers.push(offers.find(offer => offer.title === title).id);
+        includedOffers.push(offers.find((offer) => offer.title === title).id);
       }
     });
     this.updateData({
@@ -297,7 +308,7 @@ export default class PointEditorView extends SmartView {
   //проверяем введенное пользователем название точки, если по нему нашли описание - делаем updateData,
   //если не нашли (пользователь ввел что-то свое), то при отправке формы подставится последнее сохраненное на форме описание точки.
   _destinationInputHandler(evt) {
-    const destination = this._destinations.find(dectination => dectination.name === evt.target.value);
+    const destination = this._destinations.find((dectination) => dectination.name === evt.target.value);
     if(!destination) {
       return;
     }
@@ -313,12 +324,12 @@ export default class PointEditorView extends SmartView {
       this._dateFromPicker = null;
     }
     this._dateFromPicker = flatpickr(
-      this.getElement().querySelector(`#event-start-time-1`), {
-      dateFormat: FORMAT_DATE,
-      enableTime: true,
-      defaultDate: this.getElement().querySelector(`#event-start-time-1`).value,
-      onChange: this._dateFromChangeHandler,
-    },
+      this.getElement().querySelector('#event-start-time-1'), {
+        dateFormat: FORMAT_DATE,
+        enableTime: true,
+        defaultDate: this.getElement().querySelector('#event-start-time-1').value,
+        onChange: this._dateFromChangeHandler,
+      },
     );
   }
 
@@ -328,19 +339,20 @@ export default class PointEditorView extends SmartView {
       this._dateToPicker = null;
     }
     this._dateToPicker = flatpickr(
-      this.getElement().querySelector(`#event-end-time-1`), {
-      dateFormat: FORMAT_DATE,
-      enableTime: true,
-      defaultDate: this.getElement().querySelector(`#event-end-time-1`).value,
-      onChange: this._dateToChangeHandler,
-    },
+      this.getElement().querySelector('#event-end-time-1'), {
+        dateFormat: FORMAT_DATE,
+        enableTime: true,
+        defaultDate: this.getElement().querySelector('#event-end-time-1').value,
+        onChange: this._dateToChangeHandler,
+      },
     );
   }
 
   _checkDataMinMax(fromTo) {
-    const dataFrom = this.getElement().querySelector(`#event-start-time-1`);
-    const dataTo = this.getElement().querySelector(`#event-end-time-1`);
+    const dataFrom = this.getElement().querySelector('#event-start-time-1');
+    const dataTo = this.getElement().querySelector('#event-end-time-1');
     if (dataFrom.value && dataTo.value && compareDates(dataFrom.value, dataTo.value) < 0) {
+      // eslint-disable-next-line no-unused-expressions
       fromTo === 'to' ? dataTo.value = '' : dataFrom.value = '';
     }
     return true;
@@ -351,7 +363,7 @@ export default class PointEditorView extends SmartView {
       return;
     }
     this.updateData({
-      dateFromState: this.getElement().querySelector(`#event-start-time-1`).value,
+      dateFromState: this.getElement().querySelector('#event-start-time-1').value,
       dateFromPicker: this._dateFromPicker.selectedDates,
     });
   }
@@ -361,7 +373,7 @@ export default class PointEditorView extends SmartView {
       return;
     }
     this.updateData({
-      dateToState: this.getElement().querySelector(`#event-end-time-1`).value,
+      dateToState: this.getElement().querySelector('#event-end-time-1').value,
       dateToPicker: this._dateToPicker.selectedDates,
     });
   }
@@ -380,7 +392,7 @@ export default class PointEditorView extends SmartView {
     }
   }
 
-  _offerClickHandler(evt) {
+  _offerClickHandler() {
     this._includeOffers(true);
   }
 
@@ -394,22 +406,22 @@ export default class PointEditorView extends SmartView {
   static parseDataToState(data) {
     return Object.assign({},
       data, {
-      typePointState: '',
-      destinationState: {
-        name: '',
-        description: '',
-        pictures: []
+        typePointState: '',
+        destinationState: {
+          name: '',
+          description: '',
+          pictures: []
+        },
+        dateFromState: '',
+        dateToState: '',
+        dateFromPicker: '',
+        dateToPicker: '',
+        priceState: '',
+        offersState: [],
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
-      dateFromState: '',
-      dateToState: '',
-      dateFromPicker: '',
-      dateToPicker: '',
-      priceState: '',
-      offersState: [],
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    },
     );
   }
 
@@ -449,11 +461,11 @@ export default class PointEditorView extends SmartView {
   //вызывается при отправке формы, проверяем выбрал ли пользователь точку, а если выбрал, то
   //корректно ли указал название. Если по названию не смогли найти объект с описанием точки -
   //не отправляем форму.
-  _includeDestination() {
+  _isDestinationCorrect() {
 
     //если название точки менялось
     if(this._state.destinationState.name !== '') {
-      const destinationState = this._destinations.find(dectination => dectination.name === this._state.destinationState.name);
+      const destinationState = this._destinations.find((dectination) => dectination.name === this._state.destinationState.name);
       if(destinationState) {
         this._state.destinationState = destinationState;
         return true;
@@ -462,7 +474,7 @@ export default class PointEditorView extends SmartView {
       }
     }
     //а здесь ищем объект для прежней точки (если она не менялась), у новой точки оно пустое.
-    const destination = this._destinations.find(dectination => dectination.name === this._state.destination.name);
+    const destination = this._destinations.find((dectination) => dectination.name === this._state.destination.name);
     if(destination) {
       this._state.destination = destination;
       return true;
@@ -473,9 +485,9 @@ export default class PointEditorView extends SmartView {
 
   //вызывает _handleViewAction из trip-presenter`a с добавлением новой точки если передается из PointNewPresenter
   //далее добавляет в общий список точек новую точку и вызывает обзервер Модели - _handleModelEvent с параметром
-  _setSubmitHandler(evt) {
+  _submitHandler(evt) {
     evt.preventDefault();
-    if (!this._includeDestination()) {
+    if (!this._isDestinationCorrect()) {
       return;
     }
     this._includeOffers();
@@ -484,16 +496,16 @@ export default class PointEditorView extends SmartView {
 
   setSubmitFormHandler(callback) {
     this._callback.submitClick = callback;
-    this.getElement().querySelector('.event').addEventListener('submit', this._setSubmitHandler);
+    this.getElement().querySelector('.event').addEventListener('submit', this._submitHandler);
   }
 
-  _setRollupClick(evt) {
+  _rollupClick(evt) {
     evt.preventDefault();
     this._callback.rollupClick();
   }
 
   setRollupClickHandler(callback) {
     this._callback.rollupClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._setRollupClick);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupClick);
   }
 }
