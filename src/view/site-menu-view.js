@@ -21,9 +21,7 @@ export default class SiteMenuView extends AbstractView {
   _menuClickHandler(evt) {
     const menuItem = MenuItem[evt.target.textContent.toUpperCase()];
     const items = this.getElement().querySelectorAll('.trip-tabs__btn');
-    items.forEach((element) => {
-      element.textContent === menuItem ? element.className = 'trip-tabs__btn trip-tabs__btn--active' : element.className = 'trip-tabs__btn';
-    });
+    items.forEach((element) => {element.className = (element.textContent === menuItem) ? 'trip-tabs__btn trip-tabs__btn--active' : 'trip-tabs__btn';});
 
     evt.preventDefault();
     this._callback.menuClick(menuItem);
