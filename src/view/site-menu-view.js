@@ -22,11 +22,7 @@ export default class SiteMenuView extends AbstractView {
     const menuItem = MenuItem[evt.target.textContent.toUpperCase()];
     const items = this.getElement().querySelectorAll('.trip-tabs__btn');
     items.forEach((element) => {
-      if(element.textContent === menuItem) {
-        element.className = 'trip-tabs__btn trip-tabs__btn--active';
-      } else {
-        element.className = 'trip-tabs__btn';
-      }
+      element.textContent === menuItem ? element.className = 'trip-tabs__btn trip-tabs__btn--active' : element.className = 'trip-tabs__btn';
     });
 
     evt.preventDefault();
