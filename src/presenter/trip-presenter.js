@@ -1,10 +1,7 @@
 import ListEmptyView from '../view/list-empty.js';
 import { render, remove } from '../utils/render.js';
-import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '../utils/common.js';
 import InfoView from '../view/info.js';
 import PointPresenter, {State as PresenterViewState} from './point-presenter.js';
-import FiltersView from '../view/filter-view.js';
-import { getFuturePoints, getPastPoints } from '../utils/dayjs.js';
 import SortView from '../view/sort-view.js';
 import { UpdateType, UserAction, FilterType, RenderPosition, SortMode } from '../utils/const.js';
 import PointNewPresenter from './point-new-presenter.js';
@@ -16,7 +13,6 @@ export default class TripPresenter {
     this._isEmpty = true;
     this._listEmptyView = new ListEmptyView(this._isEmpty);
     this._infoPoints = null;
-    this._filtersView = new FiltersView(FilterType.EVERYTHING);
     this._tripEventsMain = tripEventsMain;
     this._pointPresenter = {};
     this._changeModePoint = this._changeModePoint.bind(this);
@@ -52,38 +48,7 @@ export default class TripPresenter {
     this._pointNewPresenter.start(this._points, this._offers, this._destinations);
   }
 
-  //получает точки (с сортировкой или фильтрацией) перед отрисовкой
-  _getPoints() {
-    this._filterType = this._filterModel.getActiveFilter();
-    this._points = this._pointsModel.getPoints();
-    let points = copy(this._points);
 
-    //фильтрация: Прошлые, Будущие, Все
-    switch (this._filterType) {
-      case FilterType.PAST:
-        points = getPastPoints(points);
-        break;
-      case FilterType.FUTURE:
-        points = getFuturePoints(points);
-        break;
-      case FilterType.EVERYTHING:
-        break;
-    }
-
-    //здесь Сортировка (день, время, цена)
-    switch (this._sortMode) {
-      case SortMode.DAY:
-        points = getSortDayPoints(points);
-        break;
-      case SortMode.TIME:
-        points = getSortTimePoints(points);
-        break;
-      case SortMode.PRICE:
-        points = getSortPricePoints(points);
-        break;
-    }
-    return points;
-  }
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
@@ -184,7 +149,10 @@ export default class TripPresenter {
       this._renderLoading();
       return;
     }
-    const points = this._getPoints();
+    const filterType = this._filterModel.getActiveFilter();
+    // console.log('111', filterType)
+    const points = this._pointsModel.getPoints(filterType);
+    // console.log('222', points)
     this._offers = this._pointsModel.getOffersAll();
     this._destinations = this._pointsModel.getDestinationsAll();
 
@@ -214,13 +182,6 @@ export default class TripPresenter {
     tripInfoMain.style.display = 'none';
     render(this._tripEventsMain, this._listEmptyView, RenderPosition.BEFOREEND);
   }
-
-  _renderFilters() {
-    const tripControlsFilters = document.querySelector('.trip-controls__filters');
-    render(tripControlsFilters, this._filtersView, RenderPosition.BEFOREEND);
-    this._filtersView.setFilterChangeHandler(() => { this._handleFilterChange();});
-  }
-
 
   _renderSort() {
     if (this._sortView !== null) {

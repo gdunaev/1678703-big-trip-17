@@ -1,4 +1,7 @@
 import Observer from '../utils/observer.js';
+import { getFuturePoints, getPastPoints } from '../utils/dayjs.js';
+import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '../utils/common.js';
+import { FilterType,  SortMode } from '../utils/const.js';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -19,6 +22,40 @@ export default class PointsModel extends Observer {
     this._notify(updateType);
   }
 
+  //получает точки (с сортировкой или фильтрацией) перед отрисовкой
+  getPoints(filterType) {
+    this._filterType = filterType;
+    let points = copy(this._points);
+
+    //фильтрация: Прошлые, Будущие, Все
+    switch (this._filterType) {
+      case FilterType.PAST:
+        points = getPastPoints(points);
+        break;
+      case FilterType.FUTURE:
+        points = getFuturePoints(points);
+        break;
+      case FilterType.EVERYTHING:
+        break;
+    }
+
+    //здесь Сортировка (день, время, цена)
+    switch (this._sortMode) {
+      case SortMode.DAY:
+        points = getSortDayPoints(points);
+        break;
+      case SortMode.TIME:
+        points = getSortTimePoints(points);
+        break;
+      case SortMode.PRICE:
+        points = getSortPricePoints(points);
+        break;
+    }
+    // console.log('22112', points)
+
+    return points;
+  }
+
   getOffersAll() {
     return this._offers;
   }
@@ -27,7 +64,7 @@ export default class PointsModel extends Observer {
     return  this._destinations;
   }
 
-  getPoints() {
+  getPointsAll() {
     return this._points;
   }
 
