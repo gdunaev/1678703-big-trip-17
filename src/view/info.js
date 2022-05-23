@@ -1,14 +1,20 @@
 import { getCumulativeDate } from '../utils/dayjs.js';
 import { AbstractView } from './abstract.js';
 
+const getMainTitle = (points) => {
+  if(points.length === 0) {
+    return '';
+  }
+  if(points.length === 3) {
+    return points.map((currentPoint) => `${currentPoint.destination.name}`).join(' &mdash; ');
+  }
+  return `${points[0].destination.name} &mdash; ... &mdash; ${points[points.length - 1].destination.name}`;
+};
+
 const createInfoTemplate = (points, offersAll) => {
 
   //маршрут (все города)
-  // eslint-disable-next-line no-nested-ternary
-  const mainTitle = points.length === 0 ?
-    '' : points.length === 3 ?
-      points.map((currentPoint) => `${currentPoint.destination.name}`).join(' &mdash; ') :
-      `${points[0].destination.name} &mdash; ... &mdash; ${points[points.length - 1].destination.name}`;
+  const mainTitle = getMainTitle(points);
 
   //даты от и до
   const cumulativeDate = points.length === 0 ? '' : getCumulativeDate(points[0].dateFrom, points[points.length - 1].dateTo);

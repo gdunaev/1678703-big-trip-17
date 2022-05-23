@@ -70,6 +70,13 @@ const getDateToEdit = (dateToState, state) => {
   return '';
 };
 
+const getDataListTemplate = (destinationsAll) => {
+  let dataListTemplate = '';
+  destinationsAll.forEach((currentDestination) => {
+    dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`;
+  });
+};
+
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const { typePoint,
     dateFromState,
@@ -99,9 +106,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const price = priceState !== '' ? priceState : state.basePrice;
 
   //подставляем все наименования точек
-  let dataListTemplate = '';
-  // eslint-disable-next-line no-return-assign
-  destinationsAll.forEach((currentDestination) => dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`);
+  const dataListTemplate = getDataListTemplate(destinationsAll);
 
   //иконки для типов точек
   typePointIconTemplate = typePointIconTemplate !== '' ? `img/icons/${typePointIconTemplate}.png` : '';
