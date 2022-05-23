@@ -5,5 +5,6 @@ parserOptions:
 env:
   es2017: true
   browser: true
+  node: true
 
 extends: 'htmlacademy/vanilla'
