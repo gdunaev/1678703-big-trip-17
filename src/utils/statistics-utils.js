@@ -5,7 +5,7 @@ const getSumAndTypes = (points) => {
   //отбор в отдельный объект с суммированием цен по типу точки
   const sum = {};
   points.filter(({ typePoint, basePrice }) => {
-    sum[typePoint] = sum[typePoint] + basePrice;
+    sum[typePoint] = (sum[typePoint]) ? sum[typePoint] + basePrice : basePrice;
   });
 
   //сортировка по убыванию и создание объекта с готовыми для диаграммы массивами
@@ -26,7 +26,7 @@ const getTypesCount = (points) => {
   //отбор в отдельный объект с суммированием количества точек
   const count = {};
   points.filter(({ typePoint }) => {
-    count[typePoint] = count[typePoint] + 1;
+    count[typePoint] = (count[typePoint]) ? count[typePoint] + 1 : 1;
   });
 
   //сортировка по убыванию и создание объекта с готовыми для диаграммы массивами
@@ -48,6 +48,7 @@ const getTime = (points) => {
   const count = {};
   points.filter(({ typePoint, dateFrom, dateTo }) => {
     count[typePoint] = count[typePoint] + getPointDurationMinute(dateFrom, dateTo);
+    count[typePoint] = (count[typePoint]) ? count[typePoint] + getPointDurationMinute(dateFrom, dateTo) : getPointDurationMinute(dateFrom, dateTo);
   });
 
   //сортировка по убыванию и создание объекта с готовыми для диаграммы массивами

@@ -75,6 +75,7 @@ const getDataListTemplate = (destinationsAll) => {
   destinationsAll.forEach((currentDestination) => {
     dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`;
   });
+  return dataListTemplate;
 };
 
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
