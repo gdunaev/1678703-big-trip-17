@@ -18,13 +18,10 @@ export default class FilterPresenter {
   init() {
     const filters = this._getFilters();
     const prevFilterView = this._filtersView;
-
     const filterType = this._filterModel.getActiveFilter();
-    const length = this._pointsModel.getPoints(filterType).length;
-console.log('0o0', length)
+    const filtersBlock =  this._pointsModel.getFiltersBlock();
 
-
-    this._filtersView = new FilterView(filters, filterType, length);
+    this._filtersView = new FilterView(filters, filterType, filtersBlock);
     this._filtersView.setFilterChangeHandler(this._handleFilterTypeChange);
     if (prevFilterView === null) {
       render(this._filterContainer, this._filtersView, RenderPosition.BEFOREEND);

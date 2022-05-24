@@ -1,7 +1,7 @@
 import Observer from '../utils/observer.js';
 import { getFuturePoints, getPastPoints } from '../utils/dayjs.js';
 import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '../utils/common.js';
-import { FilterType,  SortMode } from '../utils/const.js';
+import { FilterType, SortMode } from '../utils/const.js';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -9,6 +9,7 @@ export default class PointsModel extends Observer {
     this._points = [];
     this._offers = [];
     this._destinations = [];
+    this._filtersBlock = {};
   }
 
   setPoints(updateType, value) {
@@ -20,6 +21,15 @@ export default class PointsModel extends Observer {
     //1. установлен в FilterPresenter (вызывает init у фильтров)
     //2. установленный в TripPresenter (вызывает _renderPoints)
     this._notify(updateType);
+  }
+
+  //получает фильтры которые нужно заблокировать (сделать неактивными)
+  getFiltersBlock() {
+    const points = copy(this._points);
+    this._filtersBlock[FilterType.EVERYTHING] = !(points.length > 0);
+    this._filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    this._filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    return this._filtersBlock;
   }
 
   //получает точки (с сортировкой или фильтрацией) перед отрисовкой
@@ -51,8 +61,6 @@ export default class PointsModel extends Observer {
         points = getSortPricePoints(points);
         break;
     }
-    // console.log('22112', points)
-
     return points;
   }
 
@@ -61,7 +69,7 @@ export default class PointsModel extends Observer {
   }
 
   getDestinationsAll() {
-    return  this._destinations;
+    return this._destinations;
   }
 
   getPointsAll() {

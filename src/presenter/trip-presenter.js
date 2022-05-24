@@ -49,7 +49,6 @@ export default class TripPresenter {
   }
 
 
-
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE:
