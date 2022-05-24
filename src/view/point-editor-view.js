@@ -70,6 +70,14 @@ const getDateToEdit = (dateToState, state) => {
   return '';
 };
 
+const getDataListTemplate = (destinationsAll) => {
+  let dataListTemplate = '';
+  destinationsAll.forEach((currentDestination) => {
+    dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`;
+  });
+  return dataListTemplate;
+};
+
 const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const { typePoint,
     dateFromState,
@@ -99,9 +107,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const price = priceState !== '' ? priceState : state.basePrice;
 
   //подставляем все наименования точек
-  let dataListTemplate = '';
-  // eslint-disable-next-line no-return-assign
-  destinationsAll.forEach((currentDestination) => dataListTemplate = `${dataListTemplate} <option value='${currentDestination.name}'>${currentDestination.name}</option>`);
+  const dataListTemplate = getDataListTemplate(destinationsAll);
 
   //иконки для типов точек
   typePointIconTemplate = typePointIconTemplate !== '' ? `img/icons/${typePointIconTemplate}.png` : '';
@@ -352,8 +358,11 @@ export default class PointEditorView extends SmartView {
     const dataFrom = this.getElement().querySelector('#event-start-time-1');
     const dataTo = this.getElement().querySelector('#event-end-time-1');
     if (dataFrom.value && dataTo.value && compareDates(dataFrom.value, dataTo.value) < 0) {
-      // eslint-disable-next-line no-unused-expressions
-      fromTo === 'to' ? dataTo.value = '' : dataFrom.value = '';
+      if(fromTo === 'to') {
+        dataTo.value = '';
+      } else {
+        dataFrom.value = '';
+      }
     }
     return true;
   }

@@ -1,4 +1,7 @@
 import Observer from '../utils/observer.js';
+import { getFuturePoints, getPastPoints } from '../utils/dayjs.js';
+import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '../utils/common.js';
+import { FilterType, SortMode } from '../utils/const.js';
 
 export default class PointsModel extends Observer {
   constructor() {
@@ -6,6 +9,7 @@ export default class PointsModel extends Observer {
     this._points = [];
     this._offers = [];
     this._destinations = [];
+    this._filtersBlock = {};
   }
 
   setPoints(updateType, value) {
@@ -19,15 +23,56 @@ export default class PointsModel extends Observer {
     this._notify(updateType);
   }
 
+  //получает фильтры которые нужно заблокировать (сделать неактивными)
+  getFiltersBlock() {
+    const points = copy(this._points);
+    this._filtersBlock[FilterType.EVERYTHING] = !(points.length > 0);
+    this._filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    this._filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    return this._filtersBlock;
+  }
+
+  //получает точки (с сортировкой или фильтрацией) перед отрисовкой
+  getPoints(filterType, sortMode = SortMode.DAY) {
+    this._filterType = filterType;
+    let points = copy(this._points);
+
+    //фильтрация: Прошлые, Будущие, Все
+    switch (this._filterType) {
+      case FilterType.PAST:
+        points = getPastPoints(points);
+        break;
+      case FilterType.FUTURE:
+        points = getFuturePoints(points);
+        break;
+      case FilterType.EVERYTHING:
+        break;
+    }
+
+    //здесь Сортировка (день, время, цена)
+    switch (sortMode) {
+      case SortMode.DAY:
+        points = getSortDayPoints(points);
+        break;
+      case SortMode.TIME:
+        points = getSortTimePoints(points);
+        break;
+      case SortMode.PRICE:
+        points = getSortPricePoints(points);
+        break;
+    }
+    return points;
+  }
+
   getOffersAll() {
     return this._offers;
   }
 
   getDestinationsAll() {
-    return  this._destinations;
+    return this._destinations;
   }
 
-  getPoints() {
+  getPointsAll() {
     return this._points;
   }
 

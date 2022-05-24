@@ -42,7 +42,7 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       break;
     case MenuItem.STATS:
-      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      statisticsComponent = new StatisticsView(pointsModel.getPointsAll());
       render(pageBodyContainer, statisticsComponent, RenderPosition.BEFOREEND);
       statisticsComponent.start();
       break;

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from './common.js';
 
-// eslint-disable-next-line no-undef
 const minMax = require('dayjs/plugin/minMax');
 dayjs.extend(minMax);
 
