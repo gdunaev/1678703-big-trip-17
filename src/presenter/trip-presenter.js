@@ -120,7 +120,6 @@ export default class TripPresenter {
   }
 
   _handleSortModeChange(sortMode) {
-    // console.log('22', sortMode)
     if (this._sortMode === sortMode) {
       return;
     }
