@@ -120,6 +120,7 @@ export default class TripPresenter {
   }
 
   _handleSortModeChange(sortMode) {
+    // console.log('22', sortMode)
     if (this._sortMode === sortMode) {
       return;
     }
@@ -149,9 +150,7 @@ export default class TripPresenter {
       return;
     }
     const filterType = this._filterModel.getActiveFilter();
-    // console.log('111', filterType)
-    const points = this._pointsModel.getPoints(filterType);
-    // console.log('222', points)
+    const points = this._pointsModel.getPoints(filterType, this._sortMode);
     this._offers = this._pointsModel.getOffersAll();
     this._destinations = this._pointsModel.getDestinationsAll();
 

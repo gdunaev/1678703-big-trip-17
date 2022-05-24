@@ -33,7 +33,7 @@ export default class PointsModel extends Observer {
   }
 
   //получает точки (с сортировкой или фильтрацией) перед отрисовкой
-  getPoints(filterType) {
+  getPoints(filterType, sortMode = SortMode.DAY) {
     this._filterType = filterType;
     let points = copy(this._points);
 
@@ -50,7 +50,7 @@ export default class PointsModel extends Observer {
     }
 
     //здесь Сортировка (день, время, цена)
-    switch (this._sortMode) {
+    switch (sortMode) {
       case SortMode.DAY:
         points = getSortDayPoints(points);
         break;

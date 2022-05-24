@@ -11,7 +11,6 @@ const createFilterItemTemplate = (filter, currentFilterType, filtersBlock) => {
 };
 
 const createFiltersTemplate = (filterItems, currentFilterType, length) => {
-
   const filterItemsTemplate = filterItems
     .map((filter) => createFilterItemTemplate(filter, currentFilterType, length))
     .join('');
