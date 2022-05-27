@@ -36,12 +36,6 @@ export const RenderPosition = {
   AFTEREND: 'afterEnd',
 };
 
-
-export const Mode = {
-  FILTER: 'filter',
-  SORT: 'sort',
-};
-
 export const MenuItem = {
   TABLE: 'Table',
   STATS: 'Stats',

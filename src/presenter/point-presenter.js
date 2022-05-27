@@ -38,7 +38,7 @@ export default class PointPresenter {
     this.#pointView.setRollupClickHandler(() => { this.#replaceItemToForm(); });
     this.#pointView.setFavoriteButtonHandler(() => { this.#changeFavoriteButton(); });
     this.#pointViewEditor.setSubmitFormHandler(this.#handleFormSubmit);
-    this.#pointViewEditor.setRollupClickHandler(() => { this._replaceFormToItem(); });
+    this.#pointViewEditor.setRollupClickHandler(() => { this.#replaceFormToItem(); });
     this.#pointViewEditor.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointView === null || prevPointViewEditor === null) {
