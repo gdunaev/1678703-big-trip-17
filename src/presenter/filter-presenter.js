@@ -1,62 +1,63 @@
 import FilterView from '../view/filter-view.js';
-import {render, replace, remove} from '../utils/render.js';
-import {FilterType, UpdateType, RenderPosition} from '../utils/const.js';
+import { render, replace, remove } from '../utils/render.js';
+import { FilterType, UpdateType, RenderPosition } from '../utils/const.js';
 
 
 export default class FilterPresenter {
+  #filterContainer = null;
+  #filterModel = null;
+  #pointsModel = null;
+  #filtersView = null;
+
   constructor(filterContainer, filterModel, pointsModel) {
-    this._filterContainer = filterContainer;
-    this._filterModel = filterModel;
-    this._pointsModel = pointsModel;
-    this._filtersView = null;
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this.#filterContainer = filterContainer;
+    this.#filterModel = filterModel;
+    this.#pointsModel = pointsModel;
+    this.#filtersView = null;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
-    const filters = this._getFilters();
-    const prevFilterView = this._filtersView;
-    const filterType = this._filterModel.getActiveFilter();
-    const filtersBlock =  this._pointsModel.getFiltersBlock();
+    const filters = this.#getFilters();
+    const prevFilterView = this.#filtersView;
+    const filterType = this.#filterModel.getActiveFilter();
+    const filtersBlock = this.#pointsModel.getFiltersBlock();
 
-    this._filtersView = new FilterView(filters, filterType, filtersBlock);
-    this._filtersView.setFilterChangeHandler(this._handleFilterTypeChange);
+    this.#filtersView = new FilterView(filters, filterType, filtersBlock);
+    this.#filtersView.setFilterChangeHandler(this.#handleFilterTypeChange);
     if (prevFilterView === null) {
-      render(this._filterContainer, this._filtersView, RenderPosition.BEFOREEND);
+      render(this.#filterContainer, this.#filtersView, RenderPosition.BEFOREEND);
       return;
     }
 
-    replace(this._filtersView, prevFilterView);
+    replace(this.#filtersView, prevFilterView);
     remove(prevFilterView);
   }
 
-  _handleModelEvent() {
+  #handleModelEvent = () => {
     this.init();
-  }
+  };
 
-  _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getActiveFilter() === filterType) {
+  #handleFilterTypeChange = (filterType) => {
+    if (this.#filterModel.getActiveFilter() === filterType) {
       return;
     }
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  };
 
-  _getFilters() {
-    return [
-      {
-        type: FilterType.EVERYTHING,
-        name: 'Everything',
-      },
-      {
-        type: FilterType.FUTURE,
-        name: 'Future',
-      },
-      {
-        type: FilterType.PAST,
-        name: 'Past',
-      },
-    ];
-  }
+  #getFilters = () => [
+    {
+      type: FilterType.EVERYTHING,
+      name: 'Everything',
+    },
+    {
+      type: FilterType.FUTURE,
+      name: 'Future',
+    },
+    {
+      type: FilterType.PAST,
+      name: 'Past',
+    },
+  ];
 }

@@ -10,62 +10,65 @@ export const State = {
 };
 
 export default class PointPresenter {
+  #tripEventsMain = null;
+  #pointViewEditor = null;
+  #pointView = null;
+  #mode = null;
+  #changeMode = null;
+  #changeData = null;
+  #offers = null;
+  #destinations = null;
+  #point = null;
+
   constructor(tripEventsMain, changeMode, changeData, offers, destinations) {
-    this._tripEventsMain = tripEventsMain;
-    this._pointViewEditor = null;
-    this._pointView = null;
-    this._onEscPressDown = this._onEscPressDown.bind(this);
-    this._mode = ModeEditing.DEFAULT;
-    this._changeMode = changeMode;
-    this._changeData = changeData;
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._handleDeleteClick = this._handleDeleteClick.bind(this);
-    this._offers = offers;
-    this._destinations = destinations;
-    this._pointViewEditor = null;
-    this._pointView = null;
+    this.#tripEventsMain = tripEventsMain;
+    this.#mode = ModeEditing.DEFAULT;
+    this.#changeMode = changeMode;
+    this.#changeData = changeData;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
   start(point) {
-    this._point = point;
-    const prevPointView = this._pointView;
-    const prevPointViewEditor = this._pointViewEditor;
-    this._pointViewEditor = new PointEditorView(point, this._offers, this._destinations);
-    this._pointView = new PointView(point, this._offers, this._destinations);
-    this._pointView.setRollupClickHandler(() => { this._replaceItemToForm(); });
-    this._pointView.setFavoriteButtonHandler(() => { this._changeFavoriteButton(); });
-    this._pointViewEditor.setSubmitFormHandler(this._handleFormSubmit);
-    this._pointViewEditor.setRollupClickHandler(() => { this._replaceFormToItem(); });
-    this._pointViewEditor.setDeleteClickHandler(this._handleDeleteClick);
+    this.#point = point;
+    const prevPointView = this.#pointView;
+    const prevPointViewEditor = this.#pointViewEditor;
+    this.#pointViewEditor = new PointEditorView(point, this.#offers, this.#destinations);
+    this.#pointView = new PointView(point, this.#offers, this.#destinations);
+    this.#pointView.setRollupClickHandler(() => { this.#replaceItemToForm(); });
+    this.#pointView.setFavoriteButtonHandler(() => { this.#changeFavoriteButton(); });
+    this.#pointViewEditor.setSubmitFormHandler(this.#handleFormSubmit);
+    this.#pointViewEditor.setRollupClickHandler(() => { this._replaceFormToItem(); });
+    this.#pointViewEditor.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointView === null || prevPointViewEditor === null) {
-      render(this._tripEventsMain, this._pointView, RenderPosition.BEFOREEND);
+      render(this.#tripEventsMain, this.#pointView, RenderPosition.BEFOREEND);
       return;
     }
 
-    if (this._mode === ModeEditing.DEFAULT) {
-      replace(this._pointView, prevPointView);
+    if (this.#mode === ModeEditing.DEFAULT) {
+      replace(this.#pointView, prevPointView);
     }
 
-    if (this._mode === ModeEditing.EDITING) {
-      replace(this._pointViewEditor, prevPointViewEditor);
+    if (this.#mode === ModeEditing.EDITING) {
+      replace(this.#pointViewEditor, prevPointViewEditor);
     }
 
     remove(prevPointView);
     remove(prevPointViewEditor);
   }
 
-  _handleDeleteClick(point) {
-    this._changeData(
+  #handleDeleteClick = (point) => {
+    this.#changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
       point,
     );
-  }
+  };
 
   setViewState(state) {
     const resetFormState = () => {
-      this._pointViewEditor.updateData({
+      this.#pointViewEditor.updateData({
         isDisabled: false,
         isSaving: false,
         isDeleting: false,
@@ -74,70 +77,70 @@ export default class PointPresenter {
 
     switch (state) {
       case State.SAVING:
-        this._pointViewEditor.updateData({
+        this.#pointViewEditor.updateData({
           isDisabled: true,
           isSaving: true,
         });
         break;
       case State.DELETING:
-        this._pointViewEditor.updateData({
+        this.#pointViewEditor.updateData({
           isDisabled: true,
           isDeleting: true,
         });
         break;
       case State.ABORTING:
-        this._pointView.shake(resetFormState);
-        this._pointViewEditor.shake(resetFormState);
+        this.#pointView.shake(resetFormState);
+        this.#pointViewEditor.shake(resetFormState);
         break;
     }
   }
 
   destroy() {
-    remove(this._pointView);
-    remove(this._pointViewEditor);
+    remove(this.#pointView);
+    remove(this.#pointViewEditor);
   }
 
-  _changeFavoriteButton() {
-    this._changeData(
+  #changeFavoriteButton = () => {
+    this.#changeData(
       UserAction.UPDATE,
       UpdateType.PATCH,
-      Object.assign({}, this._point, { isFavorite: !this._point.isFavorite, },),
+      Object.assign({}, this.#point, { isFavorite: !this.#point.isFavorite, },),
     );
-  }
+  };
 
   resetView() {
-    if (this._mode !== ModeEditing.DEFAULT) {
-      this._replaceFormToItem();
+    if (this.#mode !== ModeEditing.DEFAULT) {
+      this.#replaceFormToItem();
     }
   }
 
-  _replaceItemToForm() {
-    replace(this._pointViewEditor, this._pointView);
-    document.addEventListener('keydown', this._onEscPressDown);
-    this._changeMode();
-    this._mode = ModeEditing.EDITING;
-  }
+  #replaceItemToForm = () => {
+    replace(this.#pointViewEditor, this.#pointView);
+    document.addEventListener('keydown', this.#onEscPressDown);
+    this.#changeMode();
+    this.#mode = ModeEditing.EDITING;
+  };
 
-  _replaceFormToItem() {
-    this._pointViewEditor.resetState(this._point);
-    replace(this._pointView, this._pointViewEditor);
-    document.removeEventListener('keydown', this._onEscPressDown);
-    this._mode = ModeEditing.DEFAULT;
-  }
+  #replaceFormToItem = () => {
+    this.#pointViewEditor.resetState(this.#point);
+    replace(this.#pointView, this.#pointViewEditor);
+    document.removeEventListener('keydown', this.#onEscPressDown);
+    this.#mode = ModeEditing.DEFAULT;
+  };
 
-  _onEscPressDown(evt) {
+  #onEscPressDown = (evt) => {
     if (isEscEvent(evt)) {
       evt.preventDefault();
-      this._replaceFormToItem();
+      this.#replaceFormToItem();
     }
-  }
+  };
 
-  _handleFormSubmit(point) {
-    this._changeData(
+  #handleFormSubmit = (point) => {
+    this.#changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
       Object.assign({}, point));
 
-    this._replaceFormToItem();
-  }
+    this.#replaceFormToItem();
+  };
 }

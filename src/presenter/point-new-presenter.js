@@ -1,63 +1,51 @@
 import { render, remove } from '../utils/render.js';
 import { isEscEvent } from '../utils/common.js';
 import PointEditorView from '../view/point-editor-view.js';
-import { UserAction, UpdateType, ModeEditing, RenderPosition } from '../utils/const.js';
+import { UserAction, UpdateType, RenderPosition } from '../utils/const.js';
 
 
 export default class PointNewPresenter {
+  #pointViewEditor = null;
+  #changeData = null;
+
   constructor(changeData) {
-    this._tripEventsTripSort = null;
-    this._pointViewEditor = null;
-    this._mode = ModeEditing.DEFAULT;
-    this._changeData = changeData;
-    this._state = this._getEmptyPoint();
-    this._onEscPressDown = this._onEscPressDown.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._setDeleteHandler = this._setDeleteHandler.bind(this);
-    this._points = [];
-    this._offers = [];
-    this._destinations = [];
+    this.#changeData = changeData;
   }
 
-  _getEmptyPoint() {
-    return {
-      'id': '',
-      'typePoint': '',
-      'basePrice': 0,
-      'dateFrom': '',
-      'dateTo': '',
-      'destination': {
-        'name': '',
-        'description': '',
-        'pictures': [],
-      },
-      'isFavorite': false,
-      'offers': [],
-    };
-  }
+  #getEmptyPoint = () => ({
+    'id': '',
+    'typePoint': '',
+    'basePrice': 0,
+    'dateFrom': '',
+    'dateTo': '',
+    'destination': {
+      'name': '',
+      'description': '',
+      'pictures': [],
+    },
+    'isFavorite': false,
+    'offers': [],
+  });
 
-  start(points, offers, destinations) {
-    if (this._pointViewEditor !== null) {
+  start(offers, destinations) {
+    if (this.#pointViewEditor !== null) {
       this.destroy();
       return;
     }
-    this._tripEventsTripSort = document.querySelector('.trip-events__trip-sort');
-    this._points = points;
-    this._offers = offers;
-    this._destinations = destinations;
-    this._pointViewEditor = new PointEditorView(this._state, offers, destinations);
-    this._pointViewEditor.setSubmitFormHandler(this._handleFormSubmit);
-    this._pointViewEditor.setDeleteClickHandler(this._setDeleteHandler);
-    this._pointViewEditor.setRollupClickHandler(this._setDeleteHandler);
-    document.addEventListener('keydown', this._onEscPressDown);
+    const tripEventsTripSort = document.querySelector('.trip-events__trip-sort');
+    const state = this.#getEmptyPoint();
+    this.#pointViewEditor = new PointEditorView(state, offers, destinations);
+    this.#pointViewEditor.setSubmitFormHandler(this.#handleFormSubmit);
+    this.#pointViewEditor.setDeleteClickHandler(this.#setDeleteHandler);
+    this.#pointViewEditor.setRollupClickHandler(this.#setDeleteHandler);
+    document.addEventListener('keydown', this.#onEscPressDown);
     document.querySelector('.trip-main__event-add-btn').disabled = true;
 
-    render(this._tripEventsTripSort, this._pointViewEditor, RenderPosition.AFTEREND);
+    render(tripEventsTripSort, this.#pointViewEditor, RenderPosition.AFTEREND);
   }
 
   setSaving() {
-
-    this._pointViewEditor.updateData({
+    this.#pointViewEditor.updateData({
       isDisabled: true,
       isSaving: true,
     });
@@ -65,44 +53,43 @@ export default class PointNewPresenter {
 
   setAborting() {
     const resetFormState = () => {
-      this._pointViewEditor.updateData({
+      this.#pointViewEditor.updateData({
         isDisabled: false,
         isSaving: false,
         isDeleting: false,
       });
     };
-    this._pointViewEditor.shake(resetFormState);
+    this.#pointViewEditor.shake(resetFormState);
   }
 
-  _setDeleteHandler() {
+  #setDeleteHandler = () => {
     this.destroy();
-  }
+  };
 
   destroy() {
-    if (this._pointViewEditor === null) {
+    if (this.#pointViewEditor === null) {
       return;
     }
 
-    remove(this._pointViewEditor);
-    this._pointViewEditor = null;
+    remove(this.#pointViewEditor);
+    this.#pointViewEditor = null;
 
-    document.removeEventListener('keydown', this._onEscPressDown);
+    document.removeEventListener('keydown', this.#onEscPressDown);
     document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
-  _onEscPressDown(evt) {
+  #onEscPressDown = (evt) => {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this.destroy();
     }
-  }
+  };
 
-  _handleFormSubmit(point) {
-
-    this._changeData(
+  #handleFormSubmit = (point) => {
+    this.#changeData(
       UserAction.ADD,
       UpdateType.MINOR,
       point,
     );
-  }
+  };
 }
