@@ -8,13 +8,16 @@ const createLoadingTemplate = (isLoading) => {
 };
 
 export default class LoadingView extends AbstractView {
+
+  #isLoading = null;
+
   constructor(isLoading) {
     super();
-    this._isLoading = isLoading;
+    this.#isLoading = isLoading;
   }
 
   getTemplate() {
-    return createLoadingTemplate(this._isLoading);
+    return createLoadingTemplate(this.#isLoading);
   }
 }
 

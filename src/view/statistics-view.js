@@ -253,9 +253,10 @@ const renderTimeChart = (timeCtx, points) => {
 
 
 export default class StatisticsView extends SmartView {
+  #points = null;
   constructor(points) {
     super();
-    this._points = points;
+    this.#points = points;
   }
 
   removeElement() {
@@ -271,9 +272,9 @@ export default class StatisticsView extends SmartView {
     const typeCtx = document.querySelector('.statistics__chart--transport');
     const timeCtx = document.querySelector('.statistics__chart--time');
 
-    renderMoneyChart(moneyCtx, this._points);
-    renderTypeChart(typeCtx, this._points);
-    renderTimeChart(timeCtx, this._points);
+    renderMoneyChart(moneyCtx, this.#points);
+    renderTypeChart(typeCtx, this.#points);
+    renderTimeChart(timeCtx, this.#points);
 
     this.show();
   }
