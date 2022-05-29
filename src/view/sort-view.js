@@ -29,15 +29,16 @@ const createSortTemplate = (currentSortType) => `<form class="trip-events__trip-
   </form>`;
 
 export default class SortView extends AbstractView {
-  #sortMode = null;
+
   #currentSortType = null;
+
   constructor(currentSortType) {
     super();
     this.#currentSortType = currentSortType;
   }
 
   getTemplate() {
-    return createSortTemplate(this.#currentSortType); //ДОРАБОТАТЬ!
+    return createSortTemplate(this.#currentSortType);
   }
 
   #sortModeChangeHandler = (evt) => {

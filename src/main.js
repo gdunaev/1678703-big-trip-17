@@ -68,11 +68,8 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 api.getAll().then((value) => {
   pointsModel.setPoints(UpdateType.INIT, value);
 }).catch(() => {
-  //  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
+  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
 });
 
-//1. проверить минор-мажор
 //2. сообщения при отсутствии точек
 //3. сообщения при отсутствии вообще точек
-//4. приватные поля
-//5. #clearAllPoints

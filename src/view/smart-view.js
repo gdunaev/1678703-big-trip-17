@@ -2,10 +2,9 @@ import {AbstractView} from './abstract';
 
 export default class SmartView extends AbstractView {
 
-  #state = {};
-
   constructor() {
     super();
+    this._state = {};
   }
 
   //перерисовывает компонент на странице, с новыми данными
@@ -13,9 +12,9 @@ export default class SmartView extends AbstractView {
     if (!update) {
       return;
     }
-    this.#state = Object.assign(
+    this._state = Object.assign(
       {},
-      this.#state,
+      this._state,
       update,
     );
     if (justDataUpdating) {

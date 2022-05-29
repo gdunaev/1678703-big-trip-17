@@ -8,13 +8,14 @@ const createListEmptyTemplate = (isEmpty) => {
 };
 
 export default class ListEmptyView extends AbstractView {
+  #isEmpty = null;
   constructor(isEmpty) {
     super();
-    this._isEmpty = isEmpty;
+    this.#isEmpty = isEmpty;
   }
 
   getTemplate() {
-    return createListEmptyTemplate(this._isEmpty);
+    return createListEmptyTemplate(this.#isEmpty);
   }
 }
 

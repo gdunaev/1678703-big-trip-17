@@ -253,7 +253,9 @@ const renderTimeChart = (timeCtx, points) => {
 
 
 export default class StatisticsView extends SmartView {
+
   #points = null;
+
   constructor(points) {
     super();
     this.#points = points;

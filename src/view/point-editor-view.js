@@ -226,24 +226,21 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
 
 
 export default class PointEditorView extends SmartView {
+
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #dateFromPicker = null;
+  #dateToPicker = null;
+
   constructor(point, offers, destinations) {
     super();
-    this._point = point;
-    this._offers = offers;
-    this._destinations = destinations;
-    this._submitHandler = this._submitHandler.bind(this);
-    this._rollupClick = this._rollupClick.bind(this);
-    this._dateFromPicker = null;
-    this._dateToPicker = null;
-    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
-    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
-    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
-    this._state = PointEditorView.parseDataToState(this._point);
-    this._changeEventTypeHandler = this._changeEventTypeHandler.bind(this);
-    this._destinationInputHandler = this._destinationInputHandler.bind(this);
-    this._priceInputHandler = this._priceInputHandler.bind(this);
-    this._offerClickHandler = this._offerClickHandler.bind(this);
-    this._setInnerHandlers();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this._state = PointEditorView.parseDataToState(this.#point);
+
+    this.#setInnerHandlers();
   }
 
   // Перегружаем метод родителя removeElement,
@@ -251,24 +248,24 @@ export default class PointEditorView extends SmartView {
   removeElement() {
     super.removeElement();
 
-    if (this._dateFromPicker) {
-      this._dateFromPicker.destroy();
-      this._dateFromPicker = null;
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
     }
-    if (this._dateToPicker) {
-      this._dateToPicker.destroy();
-      this._dateToPicker = null;
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
     }
   }
 
-  _formDeleteClickHandler(evt) {
+  #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick(PointEditorView.parseDataToState(this._point));
-  }
+    this._callback.deleteClick(PointEditorView.parseDataToState(this.#point));
+  };
 
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
   }
 
   resetState(point) {
@@ -277,19 +274,19 @@ export default class PointEditorView extends SmartView {
     );
   }
 
-  _setInnerHandlers() {
-    this.getElement().querySelector('.event__type-list').addEventListener('click', this._changeEventTypeHandler);
-    this._setDateFromPicker();
-    this._setDateToPicker();
-    this.getElement().querySelector('#event-destination-1').addEventListener('input', this._destinationInputHandler);
-    this.getElement().querySelector('#event-price-1').addEventListener('input', this._priceInputHandler);
-    this.getElement().querySelector('.event__available-offers').addEventListener('click', this._offerClickHandler);
-  }
+  #setInnerHandlers = () => {
+    this.getElement().querySelector('.event__type-list').addEventListener('click', this.#changeEventTypeHandler);
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
+    this.getElement().querySelector('#event-destination-1').addEventListener('input', this.#destinationInputHandler);
+    this.getElement().querySelector('#event-price-1').addEventListener('input', this.#priceInputHandler);
+    this.getElement().querySelector('.event__available-offers').addEventListener('click', this.#offerClickHandler);
+  };
 
-  _includeOffers(justDataUpdating = false) {
+  #includeOffers = (justDataUpdating = false) => {
     const offers = this._state.typePointState !== '' ?
-      this._offers.find((offer) => offer.type === this._state.typePointState).offers :
-      this._offers.find((offer) => offer.type === this._state.typePoint).offers;
+      this.#offers.find((offer) => offer.type === this._state.typePointState).offers :
+      this.#offers.find((offer) => offer.type === this._state.typePoint).offers;
 
     const offersElement = this.getElement().querySelectorAll('.event__offer-checkbox');
     const includedOffers = [];
@@ -302,19 +299,19 @@ export default class PointEditorView extends SmartView {
     this.updateData({
       offersState: includedOffers,
     }, justDataUpdating);
-  }
+  };
 
-  _priceInputHandler(evt) {
+  #priceInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
       priceState: Number(evt.target.value),
     }, true);
-  }
+  };
 
   //проверяем введенное пользователем название точки, если по нему нашли описание - делаем updateData,
   //если не нашли (пользователь ввел что-то свое), то при отправке формы подставится последнее сохраненное на форме описание точки.
-  _destinationInputHandler(evt) {
-    const destination = this._destinations.find((dectination) => dectination.name === evt.target.value);
+  #destinationInputHandler = (evt) => {
+    const destination = this.#destinations.find((dectination) => dectination.name === evt.target.value);
     if(!destination) {
       return;
     }
@@ -322,39 +319,39 @@ export default class PointEditorView extends SmartView {
     this.updateData({
       destinationState: destination,
     }, false);
-  }
+  };
 
-  _setDateFromPicker() {
-    if (this._dateFromPicker) {
-      this._dateFromPicker.destroy();
-      this._dateFromPicker = null;
+  #setDateFromPicker = () => {
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
     }
-    this._dateFromPicker = flatpickr(
+    this.#dateFromPicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'), {
         dateFormat: FORMAT_DATE,
         enableTime: true,
         defaultDate: this.getElement().querySelector('#event-start-time-1').value,
-        onChange: this._dateFromChangeHandler,
+        onChange: this.#dateFromChangeHandler,
       },
     );
-  }
+  };
 
-  _setDateToPicker() {
-    if (this._dateToPicker) {
-      this._dateToPicker.destroy();
-      this._dateToPicker = null;
+  #setDateToPicker = () => {
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
     }
-    this._dateToPicker = flatpickr(
+    this.#dateToPicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'), {
         dateFormat: FORMAT_DATE,
         enableTime: true,
         defaultDate: this.getElement().querySelector('#event-end-time-1').value,
-        onChange: this._dateToChangeHandler,
+        onChange: this.#dateToChangeHandler,
       },
     );
-  }
+  };
 
-  _checkDataMinMax(fromTo) {
+  #checkDataMinMax = (fromTo) => {
     const dataFrom = this.getElement().querySelector('#event-start-time-1');
     const dataTo = this.getElement().querySelector('#event-end-time-1');
     if (dataFrom.value && dataTo.value && compareDates(dataFrom.value, dataTo.value) < 0) {
@@ -365,48 +362,48 @@ export default class PointEditorView extends SmartView {
       }
     }
     return true;
-  }
+  };
 
-  _dateFromChangeHandler() {
-    if (!this._checkDataMinMax('from')) {
+  #dateFromChangeHandler = () => {
+    if (!this.#checkDataMinMax('from')) {
       return;
     }
     this.updateData({
       dateFromState: this.getElement().querySelector('#event-start-time-1').value,
-      dateFromPicker: this._dateFromPicker.selectedDates,
+      dateFromPicker: this.#dateFromPicker.selectedDates,
     });
-  }
+  };
 
-  _dateToChangeHandler() {
-    if (!this._checkDataMinMax('to')) {
+  #dateToChangeHandler = () => {
+    if (!this.#checkDataMinMax('to')) {
       return;
     }
     this.updateData({
       dateToState: this.getElement().querySelector('#event-end-time-1').value,
-      dateToPicker: this._dateToPicker.selectedDates,
+      dateToPicker: this.#dateToPicker.selectedDates,
     });
-  }
+  };
 
-  _getOffersId(type) {
-    const offers = this._offers.find((offer) => offer.type === type).offers;
+  #getOffersId = (type) => {
+    const offers = this.#offers.find((offer) => offer.type === type).offers;
     return offers.map((offer) => offer.id);
-  }
+  };
 
-  _changeEventTypeHandler(evt) {
+  #changeEventTypeHandler = (evt) => {
     if (evt.target.tagName === 'LABEL') {
       this.updateData({
         typePointState: (evt.target.textContent).toLowerCase(),
-        offersState: this._getOffersId((evt.target.textContent).toLowerCase()),
+        offersState: this.#getOffersId((evt.target.textContent).toLowerCase()),
       });
     }
-  }
+  };
 
-  _offerClickHandler() {
-    this._includeOffers(true);
-  }
+  #offerClickHandler = () => {
+    this.#includeOffers(true);
+  };
 
   restoreHandlers() {
-    this._setInnerHandlers();
+    this.#setInnerHandlers();
     this.setSubmitFormHandler(this._callback.submitClick);
     this.setRollupClickHandler(this._callback.rollupClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
@@ -464,17 +461,17 @@ export default class PointEditorView extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._state, this._offers, this._destinations);
+    return createPointEditTemplate(this._state, this.#offers, this.#destinations);
   }
 
   //вызывается при отправке формы, проверяем выбрал ли пользователь точку, а если выбрал, то
   //корректно ли указал название. Если по названию не смогли найти объект с описанием точки -
   //не отправляем форму.
-  _isDestinationCorrect() {
+  #isDestinationCorrect = () => {
 
     //если название точки менялось
     if(this._state.destinationState.name !== '') {
-      const destinationState = this._destinations.find((dectination) => dectination.name === this._state.destinationState.name);
+      const destinationState = this.#destinations.find((dectination) => dectination.name === this._state.destinationState.name);
       if(destinationState) {
         this._state.destinationState = destinationState;
         return true;
@@ -483,38 +480,38 @@ export default class PointEditorView extends SmartView {
       }
     }
     //а здесь ищем объект для прежней точки (если она не менялась), у новой точки оно пустое.
-    const destination = this._destinations.find((dectination) => dectination.name === this._state.destination.name);
+    const destination = this.#destinations.find((dectination) => dectination.name === this._state.destination.name);
     if(destination) {
       this._state.destination = destination;
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   //вызывает _handleViewAction из trip-presenter`a с добавлением новой точки если передается из PointNewPresenter
   //далее добавляет в общий список точек новую точку и вызывает обзервер Модели - _handleModelEvent с параметром
-  _submitHandler(evt) {
+  #submitHandler = (evt) => {
     evt.preventDefault();
-    if (!this._isDestinationCorrect()) {
+    if (!this.#isDestinationCorrect()) {
       return;
     }
-    this._includeOffers();
+    this.#includeOffers();
     this._callback.submitClick(PointEditorView.parseStateToData(this._state));
-  }
+  };
 
   setSubmitFormHandler(callback) {
     this._callback.submitClick = callback;
-    this.getElement().querySelector('.event').addEventListener('submit', this._submitHandler);
+    this.getElement().querySelector('.event').addEventListener('submit', this.#submitHandler);
   }
 
-  _rollupClick(evt) {
+  #rollupClick = (evt) => {
     evt.preventDefault();
     this._callback.rollupClick();
-  }
+  };
 
   setRollupClickHandler(callback) {
     this._callback.rollupClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupClick);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClick);
   }
 }
