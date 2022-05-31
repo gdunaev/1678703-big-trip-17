@@ -53,7 +53,9 @@ export default class TripPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE:
-        this.#pointPresenter[update.id].setViewState(PresenterViewState.SAVING);
+        if(updateType !== UpdateType.PATCH) {
+          this.#pointPresenter[update.id].setViewState(PresenterViewState.SAVING);
+        }
         this.#api.updatePoint(update).then((response) => {
           this.#pointsModel.updatePoint(updateType, response);
         }).catch(() => {
