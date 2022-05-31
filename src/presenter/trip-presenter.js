@@ -153,6 +153,7 @@ export default class TripPresenter {
     }
     const filterType = this.#filterModel.getActiveFilter();
     const points = this.#pointsModel.getPoints(filterType, this.#sortMode);
+    // const pointsAll = this.#pointsModel.getPointsAll();
     this.#offers = this.#pointsModel.getOffersAll();
     this.#destinations = this.#pointsModel.getDestinationsAll();
 
@@ -165,9 +166,16 @@ export default class TripPresenter {
 
     //если точек нет - прячем InfoView и показываем заставку
     if (points.length === 0) {
-      this.#renderNoPoints();
+      this.#renderNoPoints(filterType);
       return;
     }
+
+    // //если точек нет для текущего фильтра - показываем заставку ТЕСТ! === 0
+    // if (points.length === 0) {
+    //   // console.log('11', filterType)
+    //   this.#renderNoPointsCurrent();
+    //   return;
+    // }
 
     //отрисовываем сортировку
     this.#renderSort();
@@ -177,11 +185,28 @@ export default class TripPresenter {
   };
 
   //показываем заставку при пустом списке
-  #renderNoPoints = () => {
-    const tripInfoMain = document.querySelector('.trip-main__trip-info');
-    tripInfoMain.style.display = 'none';
+  #renderNoPoints = (filterType) => {
+    if(filterType === FilterType.EVERYTHING) {
+      const tripInfoMain = document.querySelector('.trip-main__trip-info');
+      tripInfoMain.style.display = 'none';
+    }
+
+    const filtersBlock = this.#pointsModel.getFiltersBlock();
+    this.#listEmptyView = new ListEmptyView(this.#isEmpty, filtersBlock, filterType);
+
     render(this.#tripEventsMain, this.#listEmptyView, RenderPosition.BEFOREEND);
   };
+
+  // //показываем заставку при пустом списке
+  // #renderNoPointsCurrent = () => {
+  //   // const tripInfoMain = document.querySelector('.trip-main__trip-info');
+  //   // tripInfoMain.style.display = 'none';
+
+  //   console.log('22', filtersBlock)
+
+  //   this.#listEmptyView = new ListEmptyView(this.#isEmpty, filtersBlock, filterType);
+  //   render(this.#tripEventsMain, this.#listEmptyView, RenderPosition.BEFOREEND);
+  // };
 
   #renderSort = () => {
     if (this.#sortView !== null) {

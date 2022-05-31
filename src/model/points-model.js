@@ -29,8 +29,8 @@ export default class PointsModel extends Observer {
   getFiltersBlock() {
     const points = copy(this.#points);
     this.#filtersBlock[FilterType.EVERYTHING] = !(points.length > 0);
-    this.#filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
-    this.#filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    this.#filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 4); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    this.#filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 29); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
     return this.#filtersBlock;
   }
 
@@ -45,7 +45,7 @@ export default class PointsModel extends Observer {
         points = getPastPoints(points);
         break;
       case FilterType.FUTURE:
-        points = getFuturePoints(points);
+        points = [];//getFuturePoints(points);
         break;
       case FilterType.EVERYTHING:
         break;
