@@ -140,7 +140,5 @@ export default class PointPresenter {
       UserAction.UPDATE,
       UpdateType.MINOR,
       Object.assign({}, point));
-
-    this.#replaceFormToItem();
   };
 }
