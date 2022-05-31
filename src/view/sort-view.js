@@ -29,27 +29,28 @@ const createSortTemplate = (currentSortType) => `<form class="trip-events__trip-
   </form>`;
 
 export default class SortView extends AbstractView {
+
+  #currentSortType = null;
+
   constructor(currentSortType) {
     super();
-    this._sortModeChangeHandler = this._sortModeChangeHandler.bind(this);
-    this._sortMode = null;
-    this._currentSortType = currentSortType;
+    this.#currentSortType = currentSortType;
   }
 
   getTemplate() {
-    return createSortTemplate(this._currentSortType); //ДОРАБОТАТЬ!
+    return createSortTemplate(this.#currentSortType);
   }
 
-  _sortModeChangeHandler(evt) {
+  #sortModeChangeHandler = (evt) => {
     if (evt.target.tagName !== 'INPUT') {
       return;
     }
     this._sortMode = SortMode[evt.target.value.replace('sort-', '').toUpperCase()];
     this._callback.sortModeChange(this._sortMode);
-  }
+  };
 
   setSortModeChangeHandler(callback) {
     this._callback.sortModeChange = callback;
-    this.getElement().addEventListener('click', this._sortModeChangeHandler);
+    this.getElement().addEventListener('click', this.#sortModeChangeHandler);
   }
 }

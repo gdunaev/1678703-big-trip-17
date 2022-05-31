@@ -4,11 +4,13 @@ const SHAKE_ANIMATION_TIMEOUT = 1600;
 
 
 class AbstractView {
+
+  #element = null;
+
   constructor() {
     if (new.target === AbstractView) {
       throw new Error('Can not instantiate AbstractView, only concrete one.');
     }
-    this._element = null;
     this._callback = {};
   }
 
@@ -17,14 +19,14 @@ class AbstractView {
   }
 
   getElement() {
-    if (!this._element) {
-      this._element = createElementDom(this.getTemplate());
+    if (!this.#element) {
+      this.#element = createElementDom(this.getTemplate());
     }
-    return this._element;
+    return this.#element;
   }
 
   removeElement() {
-    this._element = null;
+    this.#element = null;
   }
 
   show() {

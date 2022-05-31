@@ -49,14 +49,18 @@ const createInfoTemplate = (points, offersAll) => {
 };
 
 export default class InfoView extends AbstractView {
+
+  #points = null;
+  #offers = null;
+
   constructor(points, offersAll) {
     super();
-    this._points = points;
-    this._offers = offersAll;
+    this.#points = points;
+    this.#offers = offersAll;
   }
 
   getTemplate() {
-    return createInfoTemplate(this._points, this._offers);
+    return createInfoTemplate(this.#points, this.#offers);
   }
 }
 

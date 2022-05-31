@@ -22,7 +22,7 @@ const filterModel = new FilterModel();
 const siteMenuComponent = new SiteMenuView(MenuItem.TABLE);
 let statisticsComponent = null;
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, pointsModel);
-const presenter = new TripPresenter(tripEventsMain, pointsModel, filterModel, api);
+const tripPresenter = new TripPresenter(tripEventsMain, pointsModel, filterModel, api);
 const tripControlsNavigation = document.querySelector('.trip-controls__navigation');
 
 
@@ -55,12 +55,12 @@ siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 filterPresenter.init();
 
 //выводит список точек (пустой)
-presenter.start();
+tripPresenter.start();
 
 //обработчик создания новой точки - New Event
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
-  presenter.createPoint();
+  tripPresenter.createPoint();
 });
 
 
@@ -68,6 +68,8 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 api.getAll().then((value) => {
   pointsModel.setPoints(UpdateType.INIT, value);
 }).catch(() => {
-  //  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
+  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
 });
 
+//2. сообщения при отсутствии точек
+//3. сообщения при отсутствии вообще точек

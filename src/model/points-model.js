@@ -4,18 +4,20 @@ import { getSortPricePoints, getSortDayPoints, getSortTimePoints, copy } from '.
 import { FilterType, SortMode } from '../utils/const.js';
 
 export default class PointsModel extends Observer {
+
+  #points = [];
+  #offers = [];
+  #destinations = [];
+  #filtersBlock = {};
+
   constructor() {
     super();
-    this._points = [];
-    this._offers = [];
-    this._destinations = [];
-    this._filtersBlock = {};
   }
 
   setPoints(updateType, value) {
-    this._points = value[0]; //
-    this._destinations = value[1];
-    this._offers = value[2];
+    this.#points = value[0]; //
+    this.#destinations = value[1];
+    this.#offers = value[2];
 
     //здесь вызываются два обзервера:
     //1. установлен в FilterPresenter (вызывает init у фильтров)
@@ -25,17 +27,17 @@ export default class PointsModel extends Observer {
 
   //получает фильтры которые нужно заблокировать (сделать неактивными)
   getFiltersBlock() {
-    const points = copy(this._points);
-    this._filtersBlock[FilterType.EVERYTHING] = !(points.length > 0);
-    this._filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
-    this._filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
-    return this._filtersBlock;
+    const points = copy(this.#points);
+    this.#filtersBlock[FilterType.EVERYTHING] = !(points.length > 0);
+    this.#filtersBlock[FilterType.PAST] = !(getPastPoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    this.#filtersBlock[FilterType.FUTURE] = !(getFuturePoints(points).length > 0); //ТЕСТ-здесь поставить число точек, чтобы не удалять.
+    return this.#filtersBlock;
   }
 
   //получает точки (с сортировкой или фильтрацией) перед отрисовкой
   getPoints(filterType, sortMode = SortMode.DAY) {
     this._filterType = filterType;
-    let points = copy(this._points);
+    let points = copy(this.#points);
 
     //фильтрация: Прошлые, Будущие, Все
     switch (this._filterType) {
@@ -65,48 +67,48 @@ export default class PointsModel extends Observer {
   }
 
   getOffersAll() {
-    return this._offers;
+    return this.#offers;
   }
 
   getDestinationsAll() {
-    return this._destinations;
+    return this.#destinations;
   }
 
   getPointsAll() {
-    return this._points;
+    return this.#points;
   }
 
   updatePoint(updateType, update) {
-    const index = this._points.findIndex((point) => point.id === update.id);
+    const index = this.#points.findIndex((point) => point.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
     }
-    this._points = [
-      ...this._points.slice(0, index),
+    this.#points = [
+      ...this.#points.slice(0, index),
       update,
-      ...this._points.slice(index + 1),
+      ...this.#points.slice(index + 1),
     ];
     this._notify(updateType, update);
   }
 
   addPoint(updateType, update) {
-    this._points = [
+    this.#points = [
       update,
-      ...this._points,
+      ...this.#points,
     ];
     this._notify(updateType, update);
   }
 
   deletePoint(updateType, update) {
-    const index = this._points.findIndex((point) => point.id === update.id);
+    const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
 
-    this._points = [
-      ...this._points.slice(0, index),
-      ...this._points.slice(index + 1),
+    this.#points = [
+      ...this.#points.slice(0, index),
+      ...this.#points.slice(index + 1),
     ];
 
     this._notify(updateType);

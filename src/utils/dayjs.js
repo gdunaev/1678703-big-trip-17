@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from './common.js';
 
 const minMax = require('dayjs/plugin/minMax');
 dayjs.extend(minMax);
@@ -52,8 +51,6 @@ const getTypeDuration = (minute) => {
   durationPoint = getStringDate(durationDay, 'D', isDay) + durationPoint;
   return durationPoint;
 };
-
-const getRandomDate = () => dayjs(dayjs().add(getRandomInteger(-4320, 4320), 'minute').toDate());
 
 const getDateHour = (date) => dayjs(date).format('HH:mm');
 
@@ -118,7 +115,6 @@ const compareTime = (elementA, elementB) => {
 export {
   getDateHour,
   getMonthDay,
-  getRandomDate,
   getOnlyDate,
   getDateHourMinute,
   getDateEdit,

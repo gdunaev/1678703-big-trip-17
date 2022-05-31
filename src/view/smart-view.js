@@ -1,6 +1,7 @@
 import {AbstractView} from './abstract';
 
 export default class SmartView extends AbstractView {
+
   constructor() {
     super();
     this._state = {};

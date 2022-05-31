@@ -22,29 +22,32 @@ const createFiltersTemplate = (filterItems, currentFilterType, length) => {
 
 
 export default class FiltersView extends AbstractView {
+
+  #filters = null;
+  #filtersBlock = null;
+  #currentFilter = null;
+
   constructor(filters, currentFilterType, filtersBlock) {
     super();
-    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
-    this._filter = null;
-    this._currentFilter = currentFilterType;
-    this._filters = filters;
-    this._filtersBlock = filtersBlock;
+    this.#currentFilter = currentFilterType;
+    this.#filters = filters;
+    this.#filtersBlock = filtersBlock;
   }
 
   getTemplate() {
-    return createFiltersTemplate(this._filters, this._currentFilter, this._filtersBlock);
+    return createFiltersTemplate(this.#filters, this.#currentFilter, this.#filtersBlock);
   }
 
-  _filterTypeChangeHandler(evt) {
+  #filterTypeChangeHandler = (evt) => {
     if (evt.target.tagName !== 'INPUT') {
       return;
     }
-    this._filter = FilterType[evt.target.value.toUpperCase()];
-    this._callback.filterChange(this._filter);
-  }
+    const filter = FilterType[evt.target.value.toUpperCase()];
+    this._callback.filterChange(filter);
+  };
 
   setFilterChangeHandler(callback) {
     this._callback.filterChange = callback;
-    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+    this.getElement().addEventListener('click', this.#filterTypeChangeHandler);
   }
 }

@@ -8,28 +8,28 @@ const createNavigationTemplate = () => `<nav class="trip-controls__trip-tabs  tr
 
 
 export default class SiteMenuView extends AbstractView {
+  #currentMenuItem = null;
   constructor(currentMenuItem) {
     super();
-    this._menuClickHandler = this._menuClickHandler.bind(this);
-    this._currentMenuItem = currentMenuItem;
+    this.#currentMenuItem = currentMenuItem;
   }
 
   getTemplate() {
-    return createNavigationTemplate(this._currentMenuItem);
+    return createNavigationTemplate(this.#currentMenuItem);
   }
 
-  _menuClickHandler(evt) {
+  #menuClickHandler = (evt) => {
     const menuItem = MenuItem[evt.target.textContent.toUpperCase()];
     const items = this.getElement().querySelectorAll('.trip-tabs__btn');
     items.forEach((element) => {element.className = (element.textContent === menuItem) ? 'trip-tabs__btn trip-tabs__btn--active' : 'trip-tabs__btn';});
 
     evt.preventDefault();
     this._callback.menuClick(menuItem);
-  }
+  };
 
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
+    this.getElement().addEventListener('click', this.#menuClickHandler);
   }
 }
 
