@@ -69,8 +69,6 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 api.getAll().then((value) => {
   pointsModel.setPoints(UpdateType.INIT, value);
 }).catch(() => {
-  pointsModel.setPoints(UpdateType.INIT, [[], [], []]);
+  pointsModel.setPoints(UpdateType.INIT, [[], [], [], true]);
 });
 
-//2. сообщения при отсутствии точек
-//3. сообщения при отсутствии вообще точек

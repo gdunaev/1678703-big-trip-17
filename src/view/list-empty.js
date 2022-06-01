@@ -1,7 +1,10 @@
 import { AbstractView } from './abstract.js';
 import { FilterType } from '../utils/const.js';
 
-const createListEmptyTemplate = (filterBlock, filterType) => {
+const createListEmptyTemplate = (filterBlock, filterType, isError) => {
+  if (isError) {
+    return '<p class="trip-events__msg">Could not get the points, try again...</p>';
+  }
   if (filterBlock[FilterType.PAST] && FilterType.PAST === filterType) {
     return '<p class="trip-events__msg">There are no past events now</p>';
   }
@@ -15,14 +18,17 @@ const createListEmptyTemplate = (filterBlock, filterType) => {
 export default class ListEmptyView extends AbstractView {
   #filterBlock = null;
   #filterType = null;
-  constructor(filterBlock, filterType) {
+  #isError = false;
+
+  constructor(filterBlock, filterType, isError) {
     super();
     this.#filterBlock = filterBlock;
     this.#filterType = filterType;
+    this.#isError = isError;
   }
 
   getTemplate() {
-    return createListEmptyTemplate(this.#filterBlock, this.#filterType);
+    return createListEmptyTemplate(this.#filterBlock, this.#filterType, this.#isError);
   }
 }
 

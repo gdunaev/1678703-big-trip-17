@@ -204,7 +204,8 @@ export default class TripPresenter {
     const pageBodyContainer = pageBodyMain.querySelector('.page-body__container');
 
     const filtersBlock = this.#pointsModel.getFiltersBlock();
-    this.#listEmptyView = new ListEmptyView(filtersBlock, filterType);
+    const isError = this.#pointsModel.getError();
+    this.#listEmptyView = new ListEmptyView(filtersBlock, filterType, isError);
 
     render(pageBodyContainer, this.#listEmptyView, RenderPosition.BEFOREEND);
 
@@ -213,6 +214,11 @@ export default class TripPresenter {
     //создается от элементов сортировки.
     remove(this.#sortView);
     this.#sortView = null;
+
+    //выключаем кнопку создания точки в случае ошибки
+    if(isError) {
+      this.#newEventElement.disabled = true;
+    }
   };
 
   #renderSort = () => {
