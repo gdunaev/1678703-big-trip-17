@@ -9,6 +9,7 @@ export default class PointsModel extends Observer {
   #offers = [];
   #destinations = [];
   #filtersBlock = {};
+  #error = false;
 
   constructor() {
     super();
@@ -18,6 +19,7 @@ export default class PointsModel extends Observer {
     this.#points = value[0]; //
     this.#destinations = value[1];
     this.#offers = value[2];
+    this.#error = value.length === 4 ? value[3] : false;
 
     //здесь вызываются два обзервера:
     //1. установлен в FilterPresenter (вызывает init у фильтров)
@@ -64,6 +66,10 @@ export default class PointsModel extends Observer {
         break;
     }
     return points;
+  }
+
+  getError() {
+    return this.#error;
   }
 
   getOffersAll() {

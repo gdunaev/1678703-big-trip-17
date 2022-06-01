@@ -5,7 +5,10 @@ const getMainTitle = (points) => {
   if(points.length === 0) {
     return '';
   }
-  if(points.length === 3) {
+  if(points.length === 1) {
+    return points.map((currentPoint) => `${currentPoint.destination.name}`);
+  }
+  if(points.length === 2 || points.length === 3) {
     return points.map((currentPoint) => `${currentPoint.destination.name}`).join(' &mdash; ');
   }
   return `${points[0].destination.name} &mdash; ... &mdash; ${points[points.length - 1].destination.name}`;
@@ -34,10 +37,9 @@ const createInfoTemplate = (points, offersAll) => {
             return sumOffers + price;
           }, 0)), 0);
 
-
   return ` <section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    <h1 class="trip-info__title">${mainTitle}</h1>
+    <h1 class="trip-info__title">${mainTitle}</h1> 
 
     <p class="trip-info__dates">${cumulativeDate}</p>
   </div>

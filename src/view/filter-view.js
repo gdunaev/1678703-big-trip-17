@@ -3,9 +3,8 @@ import { FilterType } from '../utils/const.js';
 
 const createFilterItemTemplate = (filter, currentFilterType, filtersBlock) => {
   const {type, name} = filter;
-
   return `<div class="trip-filters__filter">
-  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value=${name}  ${(type === currentFilterType) ? 'checked' : ''} ${filtersBlock[type] ? 'disabled' : ''}>
+  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value=${name}  ${(type === currentFilterType) ? 'checked' : ''} ${filtersBlock[type] && FilterType.EVERYTHING !== type ? 'disabled' : ''}>
   <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
 </div>`;
 };
