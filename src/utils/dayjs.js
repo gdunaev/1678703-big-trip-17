@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
+import minMax from 'dayjs/plugin/minMax';
 
-const minMax = require('dayjs/plugin/minMax');
 dayjs.extend(minMax);
 
 const getStringDate = (partDate, symbol, isDay) => {
