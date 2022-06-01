@@ -30,6 +30,7 @@ render(tripMain, siteMenuComponent, RenderPosition.BEFOREEND);
 
 render(tripControlsNavigation, siteMenuComponent, RenderPosition.BEFOREEND);
 
+//обработчик меню для показа статистики
 const handleSiteMenuClick = (menuItem) => {
 
   if(statisticsComponent !== null) {
@@ -73,4 +74,3 @@ api.getAll().then((value) => {
 
 //2. сообщения при отсутствии точек
 //3. сообщения при отсутствии вообще точек
-//тест.

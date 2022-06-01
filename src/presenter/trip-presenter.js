@@ -1,7 +1,7 @@
 import ListEmptyView from '../view/list-empty.js';
 import { render, remove } from '../utils/render.js';
 import InfoView from '../view/info.js';
-import PointPresenter, {State as PresenterViewState} from './point-presenter.js';
+import PointPresenter, { State as PresenterViewState } from './point-presenter.js';
 import SortView from '../view/sort-view.js';
 import { UpdateType, UserAction, FilterType, RenderPosition, SortMode } from '../utils/const.js';
 import PointNewPresenter from './point-new-presenter.js';
@@ -11,8 +11,7 @@ import LoadingView from '../view/loading.js';
 export default class TripPresenter {
 
   #tripEventsMain = null;
-  #isEmpty = true;
-  #listEmptyView = new ListEmptyView(this.#isEmpty);
+  #listEmptyView = null;
   #infoPoints = null;
   #pointPresenter = {};
   #sortMode = SortMode.DAY;
@@ -46,6 +45,11 @@ export default class TripPresenter {
     this.#sortMode = SortMode.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
+    if (this.#sortView === null) {
+      this.#renderSort();
+    }
+    remove(this.#listEmptyView);
+
     this.#pointNewPresenter.start(this.#offers, this.#destinations);
   }
 
@@ -53,7 +57,7 @@ export default class TripPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE:
-        if(updateType !== UpdateType.PATCH) {
+        if (updateType !== UpdateType.PATCH) {
           this.#pointPresenter[update.id].setViewState(PresenterViewState.SAVING);
         }
         this.#api.updatePoint(update).then((response) => {
@@ -91,7 +95,7 @@ export default class TripPresenter {
         this.#renderPoints();
         break;
       case UpdateType.MAJOR:
-        this.#clearAllPoints({resetSortType: true});
+        this.#clearAllPoints({ resetSortType: true });
         this.#renderPoints();
         break;
       case UpdateType.INIT:
@@ -113,6 +117,7 @@ export default class TripPresenter {
     Object.values(this.#pointPresenter).forEach((presenter) => presenter.destroy());
     this.#pointPresenter = {};
 
+    remove(this.#listEmptyView);
     remove(this.#sortView);
     remove(this.#loadingComponent);
     remove(this.#infoPoints);
@@ -153,7 +158,6 @@ export default class TripPresenter {
     }
     const filterType = this.#filterModel.getActiveFilter();
     const points = this.#pointsModel.getPoints(filterType, this.#sortMode);
-    // const pointsAll = this.#pointsModel.getPointsAll();
     this.#offers = this.#pointsModel.getOffersAll();
     this.#destinations = this.#pointsModel.getDestinationsAll();
 
@@ -162,20 +166,21 @@ export default class TripPresenter {
     this.#infoPoints = new InfoView(points, this.#offers);
     render(tripMain, this.#infoPoints, RenderPosition.AFTERBEGIN);
 
+    //показываем Таблицу и Статистику, они могли быть скрыты когда
+    //не было точек для показа.
+    const tripTabs = document.querySelectorAll('.trip-tabs__btn');
+    for (const elem of tripTabs) {
+      elem.style.visibility = 'visible';
+    }
+
+    //включаем кнопку создания точки
     this.#newEventElement.disabled = false;
 
-    //если точек нет - прячем InfoView и показываем заставку
+    //если точек нет - прячем InfoView, кнопки Таблица/Статистика и показываем заставку
     if (points.length === 0) {
       this.#renderNoPoints(filterType);
       return;
     }
-
-    // //если точек нет для текущего фильтра - показываем заставку ТЕСТ! === 0
-    // if (points.length === 0) {
-    //   // console.log('11', filterType)
-    //   this.#renderNoPointsCurrent();
-    //   return;
-    // }
 
     //отрисовываем сортировку
     this.#renderSort();
@@ -186,27 +191,29 @@ export default class TripPresenter {
 
   //показываем заставку при пустом списке
   #renderNoPoints = (filterType) => {
-    if(filterType === FilterType.EVERYTHING) {
-      const tripInfoMain = document.querySelector('.trip-main__trip-info');
-      tripInfoMain.style.display = 'none';
+
+    const tripInfoMain = document.querySelector('.trip-main__trip-info');
+    tripInfoMain.style.display = 'none';
+
+    const tripTabs = document.querySelectorAll('.trip-tabs__btn');
+    for (const elem of tripTabs) {
+      elem.style.visibility = 'hidden';
     }
 
+    const pageBodyMain = document.querySelector('.page-body__page-main');
+    const pageBodyContainer = pageBodyMain.querySelector('.page-body__container');
+
     const filtersBlock = this.#pointsModel.getFiltersBlock();
-    this.#listEmptyView = new ListEmptyView(this.#isEmpty, filtersBlock, filterType);
+    this.#listEmptyView = new ListEmptyView(filtersBlock, filterType);
 
-    render(this.#tripEventsMain, this.#listEmptyView, RenderPosition.BEFOREEND);
+    render(pageBodyContainer, this.#listEmptyView, RenderPosition.BEFOREEND);
+
+    //здесь удаляем сортировку, на случай если будут создавать новую точку она
+    //должна отсутствовать, а при создании точки мы ее создадим. Новая точка
+    //создается от элементов сортировки.
+    remove(this.#sortView);
+    this.#sortView = null;
   };
-
-  // //показываем заставку при пустом списке
-  // #renderNoPointsCurrent = () => {
-  //   // const tripInfoMain = document.querySelector('.trip-main__trip-info');
-  //   // tripInfoMain.style.display = 'none';
-
-  //   console.log('22', filtersBlock)
-
-  //   this.#listEmptyView = new ListEmptyView(this.#isEmpty, filtersBlock, filterType);
-  //   render(this.#tripEventsMain, this.#listEmptyView, RenderPosition.BEFOREEND);
-  // };
 
   #renderSort = () => {
     if (this.#sortView !== null) {
