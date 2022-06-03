@@ -110,7 +110,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
   const dataListTemplate = getDataListTemplate(destinationsAll);
 
   //иконки для типов точек
-  typePointIconTemplate = typePointIconTemplate !== '' ? `img/icons/${typePointIconTemplate}.png` : '';
+  typePointIconTemplate = typePointIconTemplate !== '' ? `<img class="event__type-icon" width="17" height="17" src="img/icons/${typePointIconTemplate}.png" alt="">` : '';
 
   //описание и фото для названия точки
   const descriptionComponent = getDescriptionComponent(destination);
@@ -122,7 +122,7 @@ const createPointEditTemplate = (state, offersAll, destinationsAll) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="${typePointIconTemplate}" alt="">
+            ${typePointIconTemplate}
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 

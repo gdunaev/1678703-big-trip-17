@@ -1,4 +1,4 @@
-import FilterView from '../view/filter-view.js';
+import FiltersView from '../view/filters-view.js';
 import { render, replace, remove } from '../utils/render.js';
 import { FilterType, UpdateType, RenderPosition } from '../utils/const.js';
 
@@ -20,19 +20,19 @@ export default class FilterPresenter {
 
   init() {
     const filters = this.#getFilters();
-    const prevFilterView = this.#filtersView;
+    const prevFiltersView = this.#filtersView;
     const filterType = this.#filterModel.getActiveFilter();
     const filtersBlock = this.#pointsModel.getFiltersBlock();
 
-    this.#filtersView = new FilterView(filters, filterType, filtersBlock);
+    this.#filtersView = new FiltersView(filters, filterType, filtersBlock);
     this.#filtersView.setFilterChangeHandler(this.#handleFilterTypeChange);
-    if (prevFilterView === null) {
+    if (prevFiltersView === null) {
       render(this.#filterContainer, this.#filtersView, RenderPosition.BEFOREEND);
       return;
     }
 
-    replace(this.#filtersView, prevFilterView);
-    remove(prevFilterView);
+    replace(this.#filtersView, prevFiltersView);
+    remove(prevFiltersView);
   }
 
   #handleModelEvent = () => {
