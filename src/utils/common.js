@@ -9,20 +9,11 @@ const comparePrice = (elementA, elementB) => {
   return rankB - rankA;
 };
 
-const getSortPricePoints = (points) => {
-  const sortPoints = points.slice().sort(comparePrice);
-  return sortPoints;
-};
+const getSortPricePoints = (points) => points.slice().sort(comparePrice);
 
-const getSortDayPoints = (points) => {
-  const sortPoints = points.slice().sort(compareDataFrom);
-  return sortPoints;
-};
+const getSortDayPoints = (points) => points.slice().sort(compareDataFrom);
 
-const getSortTimePoints = (points) => {
-  const sortPoints = points.slice().sort(compareTime);
-  return sortPoints;
-};
+const getSortTimePoints = (points) => points.slice().sort(compareTime);
 
 const copy = (obj) => {
   const copyProps = (clone) => {
