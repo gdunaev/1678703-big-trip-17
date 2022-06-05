@@ -1,4 +1,4 @@
-import { AbstractView } from '../view/abstract.js';
+import { AbstractView } from '../view/abstract-view.js';
 import { RenderPosition } from './const.js';
 
 

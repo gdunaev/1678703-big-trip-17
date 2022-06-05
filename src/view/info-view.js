@@ -1,5 +1,5 @@
 import { getCumulativeDate } from '../utils/dayjs.js';
-import { AbstractView } from './abstract.js';
+import { AbstractView } from './abstract-view.js';
 
 const getMainTitle = (points) => {
   if(points.length === 0) {
@@ -39,7 +39,7 @@ const createInfoTemplate = (points, offersAll) => {
 
   return ` <section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    <h1 class="trip-info__title">${mainTitle}</h1> 
+    <h1 class="trip-info__title">${mainTitle}</h1>
 
     <p class="trip-info__dates">${cumulativeDate}</p>
   </div>

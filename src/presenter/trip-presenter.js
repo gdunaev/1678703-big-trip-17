@@ -1,11 +1,11 @@
-import ListEmptyView from '../view/list-empty.js';
+import ListEmptyView from '../view/list-empty-view.js';
 import { render, remove } from '../utils/render.js';
-import InfoView from '../view/info.js';
+import InfoView from '../view/info-view.js';
 import PointPresenter, { State as PresenterViewState } from './point-presenter.js';
 import SortView from '../view/sort-view.js';
 import { UpdateType, UserAction, FilterType, RenderPosition, SortMode } from '../utils/const.js';
 import PointNewPresenter from './point-new-presenter.js';
-import LoadingView from '../view/loading.js';
+import LoadingView from '../view/loading-view.js';
 
 
 export default class TripPresenter {

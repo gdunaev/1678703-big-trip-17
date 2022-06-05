@@ -1,4 +1,4 @@
-import { AbstractView } from './abstract.js';
+import { AbstractView } from './abstract-view.js';
 import he from 'he';
 import { getOnlyDate, getMonthDay, getDateHourMinute, getDateHour, getMinMaxDateDuration } from '../utils/dayjs.js';
 
